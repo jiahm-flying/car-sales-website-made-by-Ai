@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Registration | AutoMarket Hub</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --header-bg: #1a1c2e;
+            --header-accent: #e63946;
+            --primary: #1a1c2e;
+            --accent: #e63946;
+            --accent-hover: #c5303c;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --text-white: #f8f9fa;
+            --border: #dfe6e9;
+            --border-focus: #1a1c2e;
+            --error: #d63031;
+            --error-bg: #fff5f5;
+            --success: #00b894;
+            --success-bg: #f0fff4;
+            --input-bg: #fafbfc;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.13);
+            --radius-sm: 6px;
+            --radius: 10px;
+            --radius-lg: 16px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-stack: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background: linear-gradient(160deg, #eef1f5 0%, #e2e6ec 40%, #f0f2f5 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: 0 16px;
+        }
+
+        /* ── Header ─────────────────────── */
+        .site-header {
+            width: 100%;
+            background: var(--header-bg);
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.35rem;
+            letter-spacing: -0.3px;
+            transition: opacity var(--transition);
+        }
+        .logo-link:hover {
+            opacity: 0.85;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+        }
+
+        .logo-accent {
+            color: var(--header-accent);
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #cbd5e0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .nav-back:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .nav-back .arrow {
+            font-size: 1.1rem;
+            transition: transform var(--transition);
+        }
+        .nav-back:hover .arrow {
+            transform: translateX(-3px);
+        }
+
+        /* ── Main Content ──────────────── */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 40px 0 50px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 560px;
+            padding: 40px 36px 36px;
+            transition: box-shadow 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .card-header .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fef2f2;
+            color: var(--accent);
+            font-size: 1.7rem;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 14px rgba(230, 57, 70, 0.18);
+        }
+        .card-header h1 {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
+        }
+        .card-header .subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        /* ── Form ──────────────────────── */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #3a3f47;
+            margin-bottom: 5px;
+            letter-spacing: 0.2px;
+        }
+        .form-group label .required-star {
+            color: var(--error);
+            margin-left: 2px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            font-family: var(--font-stack);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--input-bg);
+            color: var(--text);
+            transition: all var(--transition);
+            outline: none;
+        }
+        .form-group input::placeholder {
+            color: #b2bec3;
+            font-size: 0.88rem;
+        }
+        .form-group input:focus {
+            border-color: var(--border-focus);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(26, 28, 46, 0.07);
+        }
+
+        /* Validation states */
+        .form-group input.input-error {
+            border-color: var(--error);
+            background: var(--error-bg);
+            box-shadow: 0 0 0 4px rgba(214, 48, 49, 0.06);
+        }
+        .form-group input.input-success {
+            border-color: var(--success);
+            background: var(--success-bg);
+            box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.06);
+        }
+
+        .error-message {
+            display: block;
+            min-height: 19px;
+            font-size: 0.78rem;
+            color: var(--error);
+            margin-top: 4px;
+            padding-left: 2px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all var(--transition);
+            pointer-events: none;
+            letter-spacing: 0.1px;
+        }
+        .error-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Submit Button ────────────── */
+        .btn-submit {
+            width: 100%;
+            padding: 13px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: var(--font-stack);
+            letter-spacing: 0.3px;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-top: 6px;
+            box-shadow: 0 4px 14px rgba(230, 57, 70, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-submit:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn-submit:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+            transition: all 0.08s ease;
+        }
+        .btn-submit:focus-visible {
+            outline: 3px solid rgba(230, 57, 70, 0.5);
+            outline-offset: 3px;
+        }
+
+        /* ── Success Banner ───────────── */
+        .success-banner {
+            display: none;
+            background: #f0fff4;
+            border: 2px solid var(--success);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            color: #006c4e;
+            font-weight: 600;
+            font-size: 0.95rem;
+            animation: fadeSlideIn 0.4s ease;
+        }
+        .success-banner.show {
+            display: block;
+        }
+        .success-banner .check-icon {
+            font-size: 1.4rem;
+            margin-right: 4px;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Footer ───────────────────── */
+        .card-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        .card-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+        .card-footer a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+        .card-footer .separator {
+            margin: 0 8px;
+            color: #ccc;
+        }
+
+        /* ── Responsive ──────────────── */
+        @media (max-width: 640px) {
+            .card {
+                padding: 28px 20px 24px;
+                border-radius: var(--radius);
+            }
+            .card-header h1 {
+                font-size: 1.3rem;
+            }
+            .card-header .icon-circle {
+                width: 44px;
+                height: 44px;
+                font-size: 1.4rem;
+            }
+            .form-group input {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            .btn-submit {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+            }
+            .header-inner {
+                height: 52px;
+            }
+            .logo-link {
+                font-size: 1.1rem;
+                gap: 6px;
+            }
+            .logo-icon {
+                font-size: 1.5rem;
+            }
+            .nav-back {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+            .main-container {
+                padding: 24px 0 36px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .card {
+                padding: 20px 14px 18px;
+            }
+            .card-header {
+                margin-bottom: 20px;
+            }
+            .form-group {
+                margin-bottom: 14px;
+            }
+            .form-group label {
+                font-size: 0.78rem;
+            }
+            .form-group input {
+                padding: 9px 10px;
+                font-size: 0.85rem;
+            }
+            .btn-submit {
+                font-size: 0.9rem;
+                padding: 11px 14px;
+            }
+            .nav-back span.label-text {
+                display: none;
+            }
+            .nav-back {
+                padding: 7px 9px;
+                border-radius: 50%;
+                aspect-ratio: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══════════════ HEADER ══════════════ -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="seller.html" class="logo-link" title="AutoMarket Hub">
+                <span class="logo-icon">🚗</span>
+                <span>Auto<span class="logo-accent">Market</span> Hub</span>
+            </a>
+            <a href="seller.html" class="nav-back" title="Back to Seller Hub">
+                <span class="arrow">←</span>
+                <span class="label-text">Seller Hub</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ══════════════ MAIN ══════════════ -->
+    <main class="main-container">
+        <div class="card">
+            <!-- Success Banner -->
+            <div class="success-banner" id="successBanner" role="status" aria-live="polite">
+                <span class="check-icon">✅</span> Registration successful! Welcome aboard, <strong id="successName"></strong>!
+            </div>
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="icon-circle">🏪</div>
+                <h1>Seller Registration</h1>
+                <p class="subtitle">Create your account to start listing vehicles</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registrationForm" novalidate>
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="name">Full Name <span class="required-star">*</span></label>
+                    <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="e.g. Zhang Wei"
+                    autocomplete="name"
+                    maxlength="80"
+                    >
+                    <span class="error-message" id="name-error" aria-live="polite"></span>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label for="address">Address <span class="required-star">*</span></label>
+                    <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    placeholder="e.g. 123 Chaoyang Road Apt 4B"
+                    autocomplete="street-address"
+                    maxlength="150"
+                    >
+                    <span class="error-message" id="address-error" aria-live="polite"></span>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required-star">*</span></label>
+                    <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="e.g. 13812345678"
+                    autocomplete="tel"
+                    maxlength="11"
+                    inputmode="numeric"
+                    >
+                    <span class="error-message" id="phone-error" aria-live="polite"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required-star">*</span></label>
+                    <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="e.g. seller@example.com"
+                    autocomplete="email"
+                    maxlength="120"
+                    >
+                    <span class="error-message" id="email-error" aria-live="polite"></span>
+                </div>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Username <span class="required-star">*</span></label>
+                    <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="At least 6 alphanumeric characters"
+                    autocomplete="username"
+                    maxlength="40"
+                    >
+                    <span class="error-message" id="username-error" aria-live="polite"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password <span class="required-star">*</span></label>
+                    <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="At least 6 alphanumeric characters"
+                    autocomplete="new-password"
+                    maxlength="60"
+                    >
+                    <span class="error-message" id="password-error" aria-live="polite"></span>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    Create Seller Account
+                </button>
+            </form>
+
+            <!-- Footer Links -->
+            <div class="card-footer">
+                Already have an account? <a href="seller.html">Sign in</a>
+                <span class="separator">|</span>
+                <a href="seller.html">← Back to Seller Hub</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- ══════════════ SCRIPTS ══════════════ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ── DOM References ──────────────
+            const form = document.getElementById('registrationForm');
+            const successBanner = document.getElementById('successBanner');
+            const successName = document.getElementById('successName');
+            const submitBtn = document.getElementById('submitBtn');
+
+            const fields = {
+                name: document.getElementById('name'),
+                address: document.getElementById('address'),
+                phone: document.getElementById('phone'),
+                email: document.getElementById('email'),
+                username: document.getElementById('username'),
+                password: document.getElementById('password'),
+            };
+
+            const errorSpans = {
+                name: document.getElementById('name-error'),
+                address: document.getElementById('address-error'),
+                phone: document.getElementById('phone-error'),
+                email: document.getElementById('email-error'),
+                username: document.getElementById('username-error'),
+                password: document.getElementById('password-error'),
+            };
+
+            // ── Validation Config ──────────
+            const validators = {
+                name: {
+                    regex: /^[A-Za-z ]+$/,
+                    emptyMsg: 'Please enter your full name.',
+                    invalidMsg: 'Name must contain only alphabetical letters and spaces.',
+                },
+                address: {
+                    regex: /^[A-Za-z0-9 ]+$/,
+                    emptyMsg: 'Please enter your address.',
+                    invalidMsg: 'Address must contain only letters, numbers, and spaces.',
+                },
+                phone: {
+                    regex: /^1[3-9]\d{9}$/,
+                    emptyMsg: 'Please enter your phone number.',
+                    invalidMsg: 'Please enter a valid 11-digit China mobile number starting with 1 (e.g. 13812345678).',
+                },
+                email: {
+                    // Regex matches: local@domain.(cn|com) — the dot before (cn|com) is escaped to match a literal period.
+                    regex: /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.(cn|com)$/,
+                    emptyMsg: 'Please enter your email address.',
+                    invalidMsg: 'Email must contain "@" exactly once and end with .cn or .com.',
+                },
+                username: {
+                    regex: /^[A-Za-z0-9]{6,}$/,
+                    emptyMsg: 'Please choose a username.',
+                    invalidMsg: 'Username must be at least 6 alphanumeric characters (letters and numbers only).',
+                },
+                password: {
+                    regex: /^[A-Za-z0-9]{6,}$/,
+                    emptyMsg: 'Please create a password.',
+                    invalidMsg: 'Password must be at least 6 alphanumeric characters (letters and numbers only).',
+                },
+            };
+
+            // ── Helper Functions ───────────
+            function showError(fieldId, message) {
+                const input = fields[fieldId];
+                const span = errorSpans[fieldId];
+                input.classList.add('input-error');
+                input.classList.remove('input-success');
+                span.textContent = message;
+                span.classList.add('visible');
+            }
+
+            function clearError(fieldId) {
+                const input = fields[fieldId];
+                const span = errorSpans[fieldId];
+                input.classList.remove('input-error');
+                span.textContent = '';
+                span.classList.remove('visible');
+            }
+
+            function markSuccess(fieldId) {
+                const input = fields[fieldId];
+                input.classList.remove('input-error');
+                input.classList.add('input-success');
+                const span = errorSpans[fieldId];
+                span.textContent = '';
+                span.classList.remove('visible');
+            }
+
+            function clearAllErrors() {
+                Object.keys(fields).forEach(function(fid) {
+                    const input = fields[fid];
+                    const span = errorSpans[fid];
+                    input.classList.remove('input-error', 'input-success');
+                    span.textContent = '';
+                    span.classList.remove('visible');
+                });
+            }
+
+            // ── Validate Single Field ──────
+            function validateField(fieldId) {
+                const input = fields[fieldId];
+                const rawValue = input.value;
+                const trimmed = rawValue.trim();
+                const config = validators[fieldId];
+
+                // Check if empty
+                if (trimmed === '') {
+                    showError(fieldId, config.emptyMsg);
+                    return false;
+                }
+
+                // Test against regex
+                if (!config.regex.test(trimmed)) {
+                    showError(fieldId, config.invalidMsg);
+                    return false;
+                }
+
+                // Valid
+                markSuccess(fieldId);
+                return true;
+            }
+
+            // ── Validate All Fields ────────
+            function validateAll() {
+                let allValid = true;
+                Object.keys(fields).forEach(function(fid) {
+                    const valid = validateField(fid);
+                    if (!valid) {
+                        allValid = false;
+                    }
+                });
+                return allValid;
+            }
+
+            // ── Hide Success Banner ────────
+            function hideSuccessBanner() {
+                successBanner.classList.remove('show');
+            }
+
+            // ── Event: Blur (validate on leaving field) ──
+            Object.keys(fields).forEach(function(fid) {
+                fields[fid].addEventListener('blur', function() {
+                    // Only validate if the user has typed something
+                    if (fields[fid].value.trim() !== '') {
+                        validateField(fid);
+                    } else {
+                        // If empty on blur, show empty error
+                        validateField(fid);
+                    }
+                });
+            });
+
+            // ── Event: Input (clear error while user corrects) ──
+            Object.keys(fields).forEach(function(fid) {
+                fields[fid].addEventListener('input', function() {
+                    const input = fields[fid];
+                    const span = errorSpans[fid];
+                    // If there's currently an error showing, re-validate on the fly
+                    if (span.classList.contains('visible')) {
+                        const trimmed = input.value.trim();
+                        const config = validators[fid];
+                        if (trimmed === '') {
+                            // Still empty, keep showing empty error
+                            showError(fid, config.emptyMsg);
+                        } else if (config.regex.test(trimmed)) {
+                            // Now valid — clear error and show success
+                            markSuccess(fid);
+                        } else {
+                            // Still invalid, update message
+                            showError(fid, config.invalidMsg);
+                        }
+                    }
+                    // Hide success banner whenever user starts typing again
+                    if (successBanner.classList.contains('show')) {
+                        hideSuccessBanner();
+                    }
+                });
+            });
+
+            // ── Event: Form Submit ─────────
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                hideSuccessBanner();
+
+                const allValid = validateAll();
+
+                if (allValid) {
+                    // All fields valid — show success
+                    const nameValue = fields.name.value.trim();
+                    successName.textContent = nameValue;
+                    successBanner.classList.add('show');
+
+                    // Scroll to the success banner
+                    successBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    // Optionally reset the form (comment out if you want to keep values)
+                    // form.reset();
+                    // Object.keys(fields).forEach(function(fid) {
+                    //     fields[fid].classList.remove('input-success');
+                    // });
+
+                    // Log for demo purposes
+                    console.log('✅ Registration successful!', {
+                        name: nameValue,
+                        address: fields.address.value.trim(),
+                        phone: fields.phone.value.trim(),
+                        email: fields.email.value.trim(),
+                        username: fields.username.value.trim(),
+                        password: '(hidden)',
+                    });
+                } else {
+                    // Focus the first field with an error
+                    const firstErrorField = Object.keys(fields).find(function(fid) {
+                        return fields[fid].classList.contains('input-error');
+                    });
+                    if (firstErrorField) {
+                        fields[firstErrorField].focus();
+                    }
+
+                    // Scroll to the first error
+                    const firstErrorSpan = document.querySelector('.error-message.visible');
+                    if (firstErrorSpan) {
+                        firstErrorSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+
+            // ── Prevent spaces in username & password on input ──
+            ['username', 'password'].forEach(function(fid) {
+                fields[fid].addEventListener('input', function() {
+                    // Remove any spaces typed
+                    if (fields[fid].value.includes(' ')) {
+                        fields[fid].value = fields[fid].value.replace(/\s/g, '');
+                    }
+                });
+            });
+
+            // ── Prevent non-digit input in phone ──
+            fields.phone.addEventListener('input', function() {
+                // Allow only digits
+                fields.phone.value = fields.phone.value.replace(/\D/g, '');
+                // Limit to 11 digits
+                if (fields.phone.value.length > 11) {
+                    fields.phone.value = fields.phone.value.slice(0, 11);
+                }
+            });
+
+            console.log('🚗 AutoMarket Hub — Seller Registration Page Ready');
+            console.log('   Validation rules active on all fields.');
+        })();
+    </script>
+</body>
+</html>
