@@ -253,25 +253,356 @@
             letter-spacing: 0.1em;
         }
 
+        @media (max-width: 1024px) {
+            .car-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 22px;
+            }
+            .search-hero {
+                padding: 48px 0 56px;
+                min-height: auto;
+            }
+            .search-hero-title {
+                font-size: 2.2rem;
+            }
+            .search-panel {
+                padding: 24px 24px;
+                gap: 16px;
+            }
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            .navbar {
+                padding: 14px 0;
+            }
             .nav-container {
+                padding: 0 20px;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
             }
+            .logo {
+                font-size: 1.5rem;
+            }
             .nav-links {
                 gap: 1.5rem;
             }
-            .login-card {
-                padding: 32px 24px;
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .search-hero {
+                padding: 40px 0 50px;
+                min-height: auto;
+            }
+            .search-hero-title {
+                font-size: 1.8rem;
+            }
+            .search-hero-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 24px;
+            }
+            .search-panel {
+                padding: 20px 18px;
+                gap: 14px;
+            }
+            .search-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .search-field {
+                min-width: 100%;
+            }
+            .search-actions {
+                flex-direction: row;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .search-actions button {
+                flex: 1;
+                white-space: normal;
+                text-align: center;
+            }
+            .car-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+            .container {
+                padding: 0 20px;
+            }
+            .results-section {
+                padding: 40px 0 50px;
+            }
+            .results-header {
+                margin-bottom: 24px;
+            }
+            .empty-state {
+                padding: 60px 20px;
+                font-size: 0.9rem;
             }
         }
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 120px 16px 40px;
+
+        @media (max-width: 600px) {
+            .car-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
-            .login-card {
-                padding: 28px 20px;
+            .search-hero-title {
+                font-size: 1.6rem;
+            }
+            .search-panel {
+                padding: 16px 14px;
+                gap: 12px;
+            }
+            .search-field input {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark {
+                padding: 12px 16px;
+                font-size: 0.8rem;
+                letter-spacing: 0.06em;
+            }
+            .card-body {
+                padding: 16px 18px 18px;
+                gap: 6px;
+            }
+            .car-title {
+                font-size: 1rem;
+            }
+            .price {
+                font-size: 1.1rem;
+            }
+            .modal-panel {
+                max-width: 100%;
+                margin: 0 8px;
+            }
+            .modal-body {
+                padding: 20px 18px 24px;
+            }
+            .modal-title {
+                font-size: 1.3rem;
+            }
+            .modal-specs {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .modal-price-large {
+                font-size: 1.5rem;
+            }
+            .modal-close {
+                top: 12px;
+                right: 12px;
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 64px;
+            }
+            .container {
+                padding: 0 14px;
+            }
+            .navbar {
+                padding: 10px 0;
+            }
+            .nav-container {
+                padding: 0 14px;
+                gap: 8px;
+            }
+            .logo {
+                font-size: 1.3rem;
+                letter-spacing: 0.08em;
+            }
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.05em;
+            }
+
+            .search-hero {
+                padding: 32px 0 40px;
+            }
+            .search-hero-title {
+                font-size: 1.5rem;
+                letter-spacing: 0.05em;
+            }
+            .search-hero-subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 20px;
+            }
+            .search-panel {
+                padding: 14px 12px;
+                gap: 10px;
+            }
+            .search-field label {
+                font-size: 0.65rem;
+            }
+            .search-field input {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            .search-actions {
+                gap: 8px;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark {
+                padding: 10px 14px;
+                font-size: 0.75rem;
+            }
+
+            .results-section {
+                padding: 30px 0 40px;
+            }
+            .results-count {
+                font-size: 0.95rem;
+            }
+            .car-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .card-body {
+                padding: 14px 14px 16px;
+                gap: 4px;
+            }
+            .car-title {
+                font-size: 0.95rem;
+            }
+            .car-meta {
+                font-size: 0.7rem;
+                gap: 10px;
+            }
+            .car-meta span+span::before {
+                left: -7px;
+            }
+            .car-details {
+                font-size: 0.7rem;
+            }
+            .price {
+                font-size: 1rem;
+            }
+            .location {
+                font-size: 0.7rem;
+            }
+
+            .modal-overlay {
+                padding: 12px;
+            }
+            .modal-panel {
+                max-height: 85vh;
+            }
+            .modal-img {
+                aspect-ratio: 4/3;
+            }
+            .modal-body {
+                padding: 16px 14px 20px;
+            }
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            .modal-subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 14px;
+            }
+            .modal-specs {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 14px 0;
+                margin-bottom: 18px;
+            }
+            .modal-spec-label {
+                font-size: 0.6rem;
+            }
+            .modal-spec-value {
+                font-size: 0.85rem;
+            }
+            .modal-price-large {
+                font-size: 1.3rem;
+                margin-bottom: 14px;
+            }
+            .modal-description {
+                font-size: 0.8rem;
+                line-height: 1.6;
+            }
+            .modal-contact {
+                font-size: 0.75rem;
+            }
+            .modal-close {
+                top: 10px;
+                right: 10px;
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            .empty-state {
+                padding: 40px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .search-hero-title {
+                font-size: 1.3rem;
+            }
+            .search-field input {
+                padding: 8px 10px;
+                font-size: 0.75rem;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark {
+                padding: 8px 10px;
+                font-size: 0.7rem;
+                letter-spacing: 0.04em;
+            }
+            .car-title {
+                font-size: 0.9rem;
+            }
+            .price {
+                font-size: 0.95rem;
+            }
+            .modal-title {
+                font-size: 1.1rem;
+            }
+            .modal-price-large {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .car-card {
+                cursor: default;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark,
+            .modal-close {
+                min-height: 44px;
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .nav-links a {
+                padding: 6px 0;
+                display: inline-block;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .car-card {
+                animation: none;
+            }
+            * {
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -325,121 +656,8 @@
         </div>
     </footer>
 
-    <!-- ══════════════ QMSL Shared Module (inline) ══════════════ -->
-    <script>
-        // 共享数据模块 QMSL，内嵌于页面，不再需要外部 js/qmsl.js
-        (function() {
-            'use strict';
-
-            // 初始化默认数据
-            function initData() {
-                if (!localStorage.getItem('qmsl_users')) {
-                    const defaultUsers = [
-                        { id: 'u1', name: 'Alice Johnson', address: '123 Main St', phone: '13812345678', email: 'alice@example.com', username: 'alice', password: 'password1' },
-                        { id: 'u2', name: 'Bob Smith', address: '456 Oak Ave', phone: '13912345678', email: 'bob@example.com', username: 'bob', password: 'password2' },
-                        { id: 'u3', name: 'Charlie Lee', address: '789 Pine Rd', phone: '13712345678', email: 'charlie@example.com', username: 'charlie', password: 'password3' }
-                    ];
-                    localStorage.setItem('qmsl_users', JSON.stringify(defaultUsers));
-                }
-                if (!localStorage.getItem('qmsl_cars')) {
-                    const defaultCars = [
-                        { id: 'c1', sellerId: 'u1', brand: 'BMW', model: 'M4', year: 2022, price: 72000, mileage: 15000, color: 'Black', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=BMW+M4' },
-                        { id: 'c2', sellerId: 'u1', brand: 'Audi', model: 'RS5', year: 2021, price: 68000, mileage: 22000, color: 'White', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Audi+RS5' },
-                        { id: 'c3', sellerId: 'u2', brand: 'Mercedes', model: 'AMG GT', year: 2023, price: 95000, mileage: 8000, color: 'Silver', location: 'Guangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Mercedes+AMG+GT' },
-                        { id: 'c4', sellerId: 'u2', brand: 'Porsche', model: '911', year: 2022, price: 110000, mileage: 12000, color: 'Black', location: 'Shenzhen', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Porsche+911' },
-                        { id: 'c5', sellerId: 'u3', brand: 'Tesla', model: 'Model S', year: 2023, price: 85000, mileage: 5000, color: 'White', location: 'Chengdu', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Tesla+Model+S' },
-                        { id: 'c6', sellerId: 'u3', brand: 'Lexus', model: 'LC 500', year: 2021, price: 78000, mileage: 18000, color: 'Gray', location: 'Hangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Lexus+LC+500' },
-                        { id: 'c7', sellerId: 'u1', brand: 'Ford', model: 'Mustang GT', year: 2022, price: 55000, mileage: 25000, color: 'Red', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Ford+Mustang+GT' },
-                        { id: 'c8', sellerId: 'u2', brand: 'Chevrolet', model: 'Corvette', year: 2023, price: 92000, mileage: 6000, color: 'Black', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Chevrolet+Corvette' }
-                    ];
-                    localStorage.setItem('qmsl_cars', JSON.stringify(defaultCars));
-                }
-            }
-            initData();
-
-            window.QMSL = {
-                // 注册
-                register: function(name, address, phone, email, username, password) {
-                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
-                    if (users.find(u => u.username === username)) return false;
-                    const newUser = {
-                        id: 'u' + Date.now(),
-                        name, address, phone, email, username, password
-                    };
-                    users.push(newUser);
-                    localStorage.setItem('qmsl_users', JSON.stringify(users));
-                    // 自动登录
-                    sessionStorage.setItem('qmsl_currentUser', JSON.stringify(newUser));
-                    return true;
-                },
-                // 登录
-                login: function(username, password) {
-                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
-                    const user = users.find(u => u.username === username && u.password === password);
-                    if (user) {
-                        sessionStorage.setItem('qmsl_currentUser', JSON.stringify(user));
-                        return true;
-                    }
-                    return false;
-                },
-                // 登出
-                logout: function() {
-                    sessionStorage.removeItem('qmsl_currentUser');
-                },
-                // 获取当前登录用户
-                getCurrentUser: function() {
-                    const stored = sessionStorage.getItem('qmsl_currentUser');
-                    return stored ? JSON.parse(stored) : null;
-                },
-                // 添加车辆
-                addCar: function(sellerId, brand, model, year, price, mileage, color, location, image) {
-                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    const newCar = {
-                        id: 'c' + Date.now(),
-                        sellerId,
-                        brand,
-                        model,
-                        year: parseInt(year),
-                        price: parseFloat(price),
-                        mileage: parseInt(mileage),
-                        color,
-                        location,
-                        image: image || `https://placehold.co/600x400/1a1a1a/ffffff?text=${encodeURIComponent(brand + '+' + model)}`
-                    };
-                    cars.push(newCar);
-                    localStorage.setItem('qmsl_cars', JSON.stringify(cars));
-                    return newCar;
-                },
-                // 搜索车辆
-                searchCars: function(filters) {
-                    let cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    const { keyword, minPrice, maxPrice, minYear, maxYear } = filters;
-                    if (keyword) {
-                        const kw = keyword.toLowerCase();
-                        cars = cars.filter(c => 
-                            c.brand.toLowerCase().includes(kw) ||
-                            c.model.toLowerCase().includes(kw) ||
-                            c.location.toLowerCase().includes(kw)
-                        );
-                    }
-                    if (minPrice) cars = cars.filter(c => c.price >= parseFloat(minPrice));
-                    if (maxPrice) cars = cars.filter(c => c.price <= parseFloat(maxPrice));
-                    if (minYear) cars = cars.filter(c => c.year >= parseInt(minYear));
-                    if (maxYear) cars = cars.filter(c => c.year <= parseInt(maxYear));
-                    return cars;
-                },
-                // 获取某卖家的车
-                getCarsBySeller: function(sellerId) {
-                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    return cars.filter(c => c.sellerId === sellerId);
-                },
-                // 获取所有车
-                getAllCars: function() {
-                    return JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                }
-            };
-        })();
-    </script>
+    <!-- 引入外部共享数据模块（根目录下的 qmsl-data.js） -->
+    <script src="qmsl-data.js"></script>
 
     <!-- ══════════════ Login Logic ══════════════ -->
     <script>
