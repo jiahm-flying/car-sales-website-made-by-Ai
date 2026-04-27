@@ -3,42 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Login | AutoMarket Hub</title>
+    <title>Login | QMSL</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
         :root {
-            --bg: #f0f2f5;
-            --card-bg: #ffffff;
-            --header-bg: #1a1c2e;
-            --header-accent: #e63946;
-            --primary: #1a1c2e;
-            --accent: #e63946;
-            --accent-hover: #c5303c;
-            --text: #2d3436;
-            --text-light: #636e72;
-            --text-white: #f8f9fa;
-            --border: #dfe6e9;
-            --border-focus: #1a1c2e;
-            --error: #d63031;
-            --error-bg: #fff5f5;
-            --success: #00b894;
-            --success-bg: #f0fff4;
-            --input-bg: #fafbfc;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
-            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.13);
-            --radius-sm: 6px;
-            --radius: 10px;
-            --radius-lg: 16px;
-            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-stack: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            --black-solid: #0a0a0a;
+            --white-solid: #ffffff;
+            --black-text: #111111;
+            --white-text: #ffffff;
+            --secondary-black: rgba(0,0,0,0.55);
+            --secondary-white: rgba(255,255,255,0.60);
+            --tertiary-black: rgba(0,0,0,0.30);
+            --tertiary-white: rgba(255,255,255,0.35);
+            --border-black: rgba(0,0,0,0.08);
+            --border-white: rgba(255,255,255,0.10);
+            --input-bg-black: rgba(255,255,255,0.06);
+            --input-bg-white: rgba(0,0,0,0.03);
         }
 
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         html {
@@ -47,635 +34,498 @@
         }
 
         body {
-            font-family: var(--font-stack);
-            background: linear-gradient(160deg, #eef1f5 0%, #e2e6ec 40%, #f0f2f5 100%);
-            color: var(--text);
+            font-family: 'Inter', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            background-color: var(--black-solid);
+            color: var(--white-text);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            padding: 0 16px;
+            letter-spacing: 0.02em;
         }
 
-        /* ── Header ─────────────────────── */
-        .site-header {
-            width: 100%;
-            background: var(--header-bg);
-            padding: 0 24px;
-            position: sticky;
+        /* ── Fixed Navbar ─────────────────────── */
+        .navbar {
+            position: fixed;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-white);
+            z-index: 1000;
+            padding: 18px 0;
+            transition: all 0.2s ease;
         }
-
-        .header-inner {
-            max-width: 1100px;
+        .nav-container {
+            max-width: 1280px;
             margin: 0 auto;
+            padding: 0 32px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            height: 60px;
-        }
-
-        .logo-link {
-            text-decoration: none;
-            display: flex;
             align-items: center;
-            gap: 10px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.35rem;
-            letter-spacing: -0.3px;
-            transition: opacity var(--transition);
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        .logo-link:hover {
-            opacity: 0.85;
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.2s;
         }
-
-        .logo-icon {
-            font-size: 1.8rem;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
-        }
-
-        .logo-accent {
-            color: var(--header-accent);
-        }
-
+        .logo:hover { opacity: 0.75; }
         .nav-links {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 2.2rem;
+            list-style: none;
+            flex-wrap: wrap;
         }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #cbd5e0;
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.75);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all var(--transition);
-            white-space: nowrap;
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
         }
-        .nav-link:hover {
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .nav-link .arrow {
-            font-size: 1.1rem;
-            transition: transform var(--transition);
-        }
-        .nav-link:hover .arrow {
-            transform: translateX(-3px);
-        }
+        .nav-links a:hover { color: #ffffff; }
 
-        /* ── Main Content ──────────────── */
-        .main-container {
+        /* ── Main Content ─────────────────────── */
+        .main-content {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 140px 32px 60px;
             width: 100%;
-            padding: 40px 0 50px;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
             width: 100%;
-            max-width: 460px;
-            padding: 40px 36px 36px;
-            transition: box-shadow 0.3s ease;
         }
-        .card:hover {
-            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.15);
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-black);
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 460px;
+            margin: 0 auto;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            color: var(--black-text);
         }
 
         .card-header {
             text-align: center;
-            margin-bottom: 32px;
-        }
-        .card-header .icon-circle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: #fef2f2;
-            color: var(--accent);
-            font-size: 1.7rem;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 14px rgba(230, 57, 70, 0.18);
+            margin-bottom: 40px;
         }
         .card-header h1 {
-            font-size: 1.55rem;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: -0.3px;
-            margin-bottom: 4px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--black-text);
+            margin-bottom: 6px;
         }
         .card-header .subtitle {
-            color: var(--text-light);
             font-size: 0.9rem;
-            font-weight: 400;
+            color: var(--secondary-black);
+            letter-spacing: 0.05em;
         }
 
-        /* ── Form ──────────────────────── */
         .form-group {
-            margin-bottom: 20px;
-            position: relative;
+            margin-bottom: 24px;
         }
-
         .form-group label {
             display: block;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #3a3f47;
-            margin-bottom: 5px;
-            letter-spacing: 0.2px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            color: var(--secondary-black);
+            margin-bottom: 8px;
         }
-        .form-group label .required-star {
-            color: var(--error);
-            margin-left: 2px;
-        }
-
         .form-group input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 14px 16px;
             font-size: 0.95rem;
-            font-family: var(--font-stack);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            background: var(--input-bg);
-            color: var(--text);
-            transition: all var(--transition);
+            font-family: inherit;
+            background: var(--input-bg-white);
+            border: 1px solid var(--border-black);
+            border-radius: 8px;
+            color: var(--black-text);
             outline: none;
-        }
-        .form-group input::placeholder {
-            color: #b2bec3;
-            font-size: 0.88rem;
+            transition: border 0.2s, background 0.2s;
         }
         .form-group input:focus {
-            border-color: var(--border-focus);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(26, 28, 46, 0.07);
+            border-color: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.02);
         }
-
-        /* Validation states */
         .form-group input.input-error {
-            border-color: var(--error);
-            background: var(--error-bg);
-            box-shadow: 0 0 0 4px rgba(214, 48, 49, 0.06);
+            border-color: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.02);
         }
-        .form-group input.input-success {
-            border-color: var(--success);
-            background: var(--success-bg);
-            box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.06);
-        }
-
         .error-message {
-            display: block;
-            min-height: 19px;
-            font-size: 0.78rem;
-            color: var(--error);
-            margin-top: 4px;
-            padding-left: 2px;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateY(-4px);
-            transition: all var(--transition);
-            pointer-events: none;
-            letter-spacing: 0.1px;
-        }
-        .error-message.visible {
-            opacity: 1;
-            transform: translateY(0);
+            font-size: 0.75rem;
+            color: var(--secondary-black);
+            margin-top: 6px;
+            min-height: 18px;
+            letter-spacing: 0.03em;
+            transition: opacity 0.2s;
         }
 
-        /* ── Submit Button ────────────── */
         .btn-submit {
             width: 100%;
-            padding: 13px 20px;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: var(--font-stack);
-            letter-spacing: 0.3px;
-            color: #fff;
-            background: var(--accent);
+            padding: 14px 24px;
+            background: var(--black-solid);
+            color: var(--white-text);
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
             cursor: pointer;
-            transition: all var(--transition);
-            margin-top: 6px;
-            box-shadow: 0 4px 14px rgba(230, 57, 70, 0.3);
-            position: relative;
-            overflow: hidden;
+            transition: opacity 0.2s, transform 0.2s;
+            margin-top: 8px;
         }
         .btn-submit:hover {
-            background: var(--accent-hover);
-            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+            opacity: 0.9;
             transform: translateY(-1px);
         }
         .btn-submit:active {
             transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
-            transition: all 0.08s ease;
-        }
-        .btn-submit:focus-visible {
-            outline: 3px solid rgba(230, 57, 70, 0.5);
-            outline-offset: 3px;
         }
 
-        /* ── Success Banner ───────────── */
-        .success-banner {
-            display: none;
-            background: #f0fff4;
-            border: 2px solid var(--success);
-            border-radius: var(--radius);
-            padding: 16px 20px;
-            margin-bottom: 24px;
+        .success-msg {
+            background: rgba(0,0,0,0.03);
+            border: 1px solid var(--border-black);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 28px;
             text-align: center;
-            color: #006c4e;
-            font-weight: 600;
-            font-size: 0.95rem;
-            animation: fadeSlideIn 0.4s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--black-text);
+            letter-spacing: 0.04em;
+            display: none;
         }
-        .success-banner.show {
+        .success-msg.show {
             display: block;
         }
-        .success-banner .check-icon {
-            font-size: 1.4rem;
-            margin-right: 4px;
-        }
 
-        @keyframes fadeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ── Footer ───────────────────── */
         .card-footer {
             text-align: center;
-            margin-top: 22px;
+            margin-top: 28px;
             font-size: 0.85rem;
-            color: var(--text-light);
+            color: var(--secondary-black);
+            letter-spacing: 0.04em;
         }
         .card-footer a {
-            color: var(--accent);
+            color: var(--black-text);
             text-decoration: none;
             font-weight: 600;
-            transition: color var(--transition);
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--secondary-black);
+            transition: opacity 0.2s;
         }
         .card-footer a:hover {
-            color: var(--accent-hover);
-            text-decoration: underline;
-        }
-        .card-footer .separator {
-            margin: 0 8px;
-            color: #ccc;
+            opacity: 0.7;
         }
 
-        /* ── Responsive ──────────────── */
-        @media (max-width: 640px) {
-            .card {
-                padding: 28px 20px 24px;
-                border-radius: var(--radius);
-                max-width: 100%;
-            }
-            .card-header h1 {
-                font-size: 1.3rem;
-            }
-            .card-header .icon-circle {
-                width: 44px;
-                height: 44px;
-                font-size: 1.4rem;
-            }
-            .form-group input {
-                padding: 10px 12px;
-                font-size: 0.9rem;
-            }
-            .btn-submit {
-                padding: 12px 16px;
-                font-size: 0.95rem;
-            }
-            .header-inner {
-                height: 52px;
-            }
-            .logo-link {
-                font-size: 1.1rem;
-                gap: 6px;
-            }
-            .logo-icon {
-                font-size: 1.5rem;
-            }
-            .nav-link {
-                font-size: 0.8rem;
-                padding: 6px 10px;
-            }
-            .main-container {
-                padding: 24px 0 36px;
-            }
+        /* ── Footer ──────────────────────────── */
+        .footer {
+            background-color: #0a0a0a;
+            padding: 48px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-white);
+        }
+        .footer p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
         }
 
-        @media (max-width: 380px) {
-            .card {
-                padding: 20px 14px 18px;
-            }
-            .card-header {
-                margin-bottom: 20px;
-            }
-            .form-group {
-                margin-bottom: 14px;
-            }
-            .form-group label {
-                font-size: 0.78rem;
-            }
-            .form-group input {
-                padding: 9px 10px;
-                font-size: 0.85rem;
-            }
-            .btn-submit {
-                font-size: 0.9rem;
-                padding: 11px 14px;
-            }
-            .nav-link span.label-text {
-                display: none;
-            }
-            .nav-link {
-                padding: 7px 9px;
-                border-radius: 50%;
-                aspect-ratio: 1;
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
             }
             .nav-links {
-                gap: 6px;
+                gap: 1.5rem;
+            }
+            .login-card {
+                padding: 32px 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 120px 16px 40px;
+            }
+            .login-card {
+                padding: 28px 20px;
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- ══════════════ HEADER ══════════════ -->
-    <header class="site-header">
-        <div class="header-inner">
-            <a href="index.html" class="logo-link" title="AutoMarket Hub Home">
-                <span class="logo-icon">🚗</span>
-                <span>Auto<span class="logo-accent">Market</span> Hub</span>
-            </a>
-            <div class="nav-links">
-                <a href="seller.html" class="nav-link" title="Seller Hub">
-                    <span class="arrow">←</span>
-                    <span class="label-text">Seller Hub</span>
-                </a>
-                <a href="index.html" class="nav-link" title="Homepage">
-                    <span>🏠</span>
-                    <span class="label-text">Home</span>
-                </a>
-            </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">QMSL</a>
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="search.html">SEARCH</a></li>
+                <li><a href="add-car.html">ADD CAR</a></li>
+                <li><a href="inventory.html">INVENTORY</a></li>
+                <li><a href="login.html">LOGIN</a></li>
+            </ul>
         </div>
-    </header>
+    </nav>
 
-    <!-- ══════════════ MAIN ══════════════ -->
-    <main class="main-container">
-        <div class="card">
-            <!-- Success Banner -->
-            <div class="success-banner" id="successBanner" role="status" aria-live="polite">
-                <span class="check-icon">✅</span> Welcome back, <strong id="successUser"></strong>!
-            </div>
-
-            <!-- Card Header -->
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="login-card">
+            <div class="success-msg" id="successMsg"></div>
             <div class="card-header">
-                <div class="icon-circle">🔑</div>
-                <h1>Seller Login</h1>
-                <p class="subtitle">Sign in to manage your vehicle listings</p>
+                <h1>SELLER LOGIN</h1>
+                <p class="subtitle">Sign in to manage your vehicles</p>
             </div>
-
-            <!-- Login Form -->
             <form id="loginForm" novalidate>
-                <!-- Username -->
                 <div class="form-group">
-                    <label for="username">Username <span class="required-star">*</span></label>
-                    <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="Enter your username"
-                    autocomplete="username"
-                    maxlength="40"
-                    required
-                    >
-                    <span class="error-message" id="username-error" aria-live="polite"></span>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" maxlength="40" required>
+                    <div class="error-message" id="username-error"></div>
                 </div>
-
-                <!-- Password -->
                 <div class="form-group">
-                    <label for="password">Password <span class="required-star">*</span></label>
-                    <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                    maxlength="60"
-                    required
-                    >
-                    <span class="error-message" id="password-error" aria-live="polite"></span>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" maxlength="60" required>
+                    <div class="error-message" id="password-error"></div>
                 </div>
-
-                <!-- Submit -->
-                <button type="submit" class="btn-submit" id="loginBtn">
-                    Log In
-                </button>
+                <button type="submit" class="btn-submit">LOG IN</button>
             </form>
-
-            <!-- Footer Links -->
             <div class="card-footer">
                 Don't have an account? <a href="register.html">Register here</a>
-                <span class="separator">|</span>
-                <a href="seller.html">← Back to Seller Hub</a>
-                <span class="separator">|</span>
-                <a href="index.html">Home</a>
             </div>
         </div>
     </main>
 
-    <!-- ══════════════ SCRIPTS ══════════════ -->
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 QMSL. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ══════════════ QMSL Shared Module (inline) ══════════════ -->
+    <script>
+        // 共享数据模块 QMSL，内嵌于页面，不再需要外部 js/qmsl.js
+        (function() {
+            'use strict';
+
+            // 初始化默认数据
+            function initData() {
+                if (!localStorage.getItem('qmsl_users')) {
+                    const defaultUsers = [
+                        { id: 'u1', name: 'Alice Johnson', address: '123 Main St', phone: '13812345678', email: 'alice@example.com', username: 'alice', password: 'password1' },
+                        { id: 'u2', name: 'Bob Smith', address: '456 Oak Ave', phone: '13912345678', email: 'bob@example.com', username: 'bob', password: 'password2' },
+                        { id: 'u3', name: 'Charlie Lee', address: '789 Pine Rd', phone: '13712345678', email: 'charlie@example.com', username: 'charlie', password: 'password3' }
+                    ];
+                    localStorage.setItem('qmsl_users', JSON.stringify(defaultUsers));
+                }
+                if (!localStorage.getItem('qmsl_cars')) {
+                    const defaultCars = [
+                        { id: 'c1', sellerId: 'u1', brand: 'BMW', model: 'M4', year: 2022, price: 72000, mileage: 15000, color: 'Black', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=BMW+M4' },
+                        { id: 'c2', sellerId: 'u1', brand: 'Audi', model: 'RS5', year: 2021, price: 68000, mileage: 22000, color: 'White', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Audi+RS5' },
+                        { id: 'c3', sellerId: 'u2', brand: 'Mercedes', model: 'AMG GT', year: 2023, price: 95000, mileage: 8000, color: 'Silver', location: 'Guangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Mercedes+AMG+GT' },
+                        { id: 'c4', sellerId: 'u2', brand: 'Porsche', model: '911', year: 2022, price: 110000, mileage: 12000, color: 'Black', location: 'Shenzhen', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Porsche+911' },
+                        { id: 'c5', sellerId: 'u3', brand: 'Tesla', model: 'Model S', year: 2023, price: 85000, mileage: 5000, color: 'White', location: 'Chengdu', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Tesla+Model+S' },
+                        { id: 'c6', sellerId: 'u3', brand: 'Lexus', model: 'LC 500', year: 2021, price: 78000, mileage: 18000, color: 'Gray', location: 'Hangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Lexus+LC+500' },
+                        { id: 'c7', sellerId: 'u1', brand: 'Ford', model: 'Mustang GT', year: 2022, price: 55000, mileage: 25000, color: 'Red', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Ford+Mustang+GT' },
+                        { id: 'c8', sellerId: 'u2', brand: 'Chevrolet', model: 'Corvette', year: 2023, price: 92000, mileage: 6000, color: 'Black', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Chevrolet+Corvette' }
+                    ];
+                    localStorage.setItem('qmsl_cars', JSON.stringify(defaultCars));
+                }
+            }
+            initData();
+
+            window.QMSL = {
+                // 注册
+                register: function(name, address, phone, email, username, password) {
+                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
+                    if (users.find(u => u.username === username)) return false;
+                    const newUser = {
+                        id: 'u' + Date.now(),
+                        name, address, phone, email, username, password
+                    };
+                    users.push(newUser);
+                    localStorage.setItem('qmsl_users', JSON.stringify(users));
+                    // 自动登录
+                    sessionStorage.setItem('qmsl_currentUser', JSON.stringify(newUser));
+                    return true;
+                },
+                // 登录
+                login: function(username, password) {
+                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
+                    const user = users.find(u => u.username === username && u.password === password);
+                    if (user) {
+                        sessionStorage.setItem('qmsl_currentUser', JSON.stringify(user));
+                        return true;
+                    }
+                    return false;
+                },
+                // 登出
+                logout: function() {
+                    sessionStorage.removeItem('qmsl_currentUser');
+                },
+                // 获取当前登录用户
+                getCurrentUser: function() {
+                    const stored = sessionStorage.getItem('qmsl_currentUser');
+                    return stored ? JSON.parse(stored) : null;
+                },
+                // 添加车辆
+                addCar: function(sellerId, brand, model, year, price, mileage, color, location, image) {
+                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                    const newCar = {
+                        id: 'c' + Date.now(),
+                        sellerId,
+                        brand,
+                        model,
+                        year: parseInt(year),
+                        price: parseFloat(price),
+                        mileage: parseInt(mileage),
+                        color,
+                        location,
+                        image: image || `https://placehold.co/600x400/1a1a1a/ffffff?text=${encodeURIComponent(brand + '+' + model)}`
+                    };
+                    cars.push(newCar);
+                    localStorage.setItem('qmsl_cars', JSON.stringify(cars));
+                    return newCar;
+                },
+                // 搜索车辆
+                searchCars: function(filters) {
+                    let cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                    const { keyword, minPrice, maxPrice, minYear, maxYear } = filters;
+                    if (keyword) {
+                        const kw = keyword.toLowerCase();
+                        cars = cars.filter(c => 
+                            c.brand.toLowerCase().includes(kw) ||
+                            c.model.toLowerCase().includes(kw) ||
+                            c.location.toLowerCase().includes(kw)
+                        );
+                    }
+                    if (minPrice) cars = cars.filter(c => c.price >= parseFloat(minPrice));
+                    if (maxPrice) cars = cars.filter(c => c.price <= parseFloat(maxPrice));
+                    if (minYear) cars = cars.filter(c => c.year >= parseInt(minYear));
+                    if (maxYear) cars = cars.filter(c => c.year <= parseInt(maxYear));
+                    return cars;
+                },
+                // 获取某卖家的车
+                getCarsBySeller: function(sellerId) {
+                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                    return cars.filter(c => c.sellerId === sellerId);
+                },
+                // 获取所有车
+                getAllCars: function() {
+                    return JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                }
+            };
+        })();
+    </script>
+
+    <!-- ══════════════ Login Logic ══════════════ -->
     <script>
         (function() {
             'use strict';
 
-            // ── DOM References ──────────────
-            const form = document.getElementById('loginForm');
-            const successBanner = document.getElementById('successBanner');
-            const successUser = document.getElementById('successUser');
-            const loginBtn = document.getElementById('loginBtn');
+            // 如果已经登录，直接跳转首页
+            const currentUser = window.QMSL.getCurrentUser();
+            if (currentUser) {
+                window.location.href = 'index.html';
+                return;
+            }
 
+            const form = document.getElementById('loginForm');
+            const successMsg = document.getElementById('successMsg');
             const fields = {
                 username: document.getElementById('username'),
                 password: document.getElementById('password')
             };
-
-            const errorSpans = {
+            const errors = {
                 username: document.getElementById('username-error'),
                 password: document.getElementById('password-error')
             };
 
-            // ── Error / Success Helpers ────
             function showError(fieldId, message) {
-                const input = fields[fieldId];
-                const span = errorSpans[fieldId];
-                input.classList.add('input-error');
-                input.classList.remove('input-success');
-                span.textContent = message;
-                span.classList.add('visible');
+                fields[fieldId].classList.add('input-error');
+                errors[fieldId].textContent = message;
             }
-
             function clearError(fieldId) {
-                const input = fields[fieldId];
-                const span = errorSpans[fieldId];
-                input.classList.remove('input-error');
-                span.textContent = '';
-                span.classList.remove('visible');
+                fields[fieldId].classList.remove('input-error');
+                errors[fieldId].textContent = '';
             }
 
-            function markSuccess(fieldId) {
-                const input = fields[fieldId];
-                input.classList.remove('input-error');
-                input.classList.add('input-success');
-                const span = errorSpans[fieldId];
-                span.textContent = '';
-                span.classList.remove('visible');
-            }
-
-            function clearAllErrors() {
-                Object.keys(fields).forEach(function(fid) {
-                    clearError(fid);
-                });
-            }
-
-            function hideSuccessBanner() {
-                successBanner.classList.remove('show');
-            }
-
-            // ── Validate single field (non‑empty) ──
             function validateField(fieldId) {
-                const input = fields[fieldId];
-                const trimmed = input.value.trim();
-                const fieldName = fieldId === 'username' ? 'Username' : 'Password';
-
-                if (trimmed === '') {
-                    showError(fieldId, `${fieldName} is required.`);
+                const value = fields[fieldId].value.trim();
+                const label = fieldId === 'username' ? 'Username' : 'Password';
+                if (!value) {
+                    showError(fieldId, `${label} is required.`);
                     return false;
                 }
-
-                // Only non‑empty check – mark as valid
-                markSuccess(fieldId);
+                clearError(fieldId);
                 return true;
             }
 
-            // ── Validate all fields ────────
             function validateAll() {
-                let allValid = true;
-                Object.keys(fields).forEach(function(fid) {
-                    if (!validateField(fid)) {
-                        allValid = false;
-                    }
+                let valid = true;
+                Object.keys(fields).forEach(fid => {
+                    if (!validateField(fid)) valid = false;
                 });
-                return allValid;
+                return valid;
             }
 
-            // ── Event Listeners ────────────
-
-            // Blur: validate when leaving a field
-            Object.keys(fields).forEach(function(fid) {
-                fields[fid].addEventListener('blur', function() {
-                    // Only validate if the user has typed something (or empty)
-                    validateField(fid);
-                });
-            });
-
-            // Input: remove error styling on correction, hide success banner
-            Object.keys(fields).forEach(function(fid) {
+            Object.keys(fields).forEach(fid => {
                 fields[fid].addEventListener('input', function() {
-                    const input = fields[fid];
-                    const span = errorSpans[fid];
-                    // If there was an error, re‑evaluate as user types
-                    if (span.classList.contains('visible')) {
-                        const trimmed = input.value.trim();
-                        if (trimmed === '') {
-                            showError(fid, `${fid === 'username' ? 'Username' : 'Password'} is required.`);
-                        } else {
-                            markSuccess(fid);
-                        }
-                    }
-                    // Hide success banner when user starts typing again
-                    if (successBanner.classList.contains('show')) {
-                        hideSuccessBanner();
-                    }
+                    if (this.value.trim() !== '') clearError(fid);
+                    successMsg.classList.remove('show');
+                });
+                fields[fid].addEventListener('blur', function() {
+                    if (this.value.trim() !== '') validateField(fid);
                 });
             });
 
-            // Prevent spaces in username (optional, keeps it clean)
-            fields.username.addEventListener('input', function() {
-                if (fields.username.value.includes(' ')) {
-                    fields.username.value = fields.username.value.replace(/\s/g, '');
-                }
-            });
-
-            // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                hideSuccessBanner();
+                successMsg.classList.remove('show');
+                if (!validateAll()) return;
 
-                const allValid = validateAll();
+                const username = fields.username.value.trim();
+                const password = fields.password.value.trim();
 
-                if (allValid) {
-                    // Both fields non‑empty – simulate successful login
-                    const usernameValue = fields.username.value.trim();
-                    successUser.textContent = usernameValue;
-                    successBanner.classList.add('show');
-
-                    // Scroll to the success message
-                    successBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                    // For demo: optionally reset the form (comment out to keep values)
-                    // form.reset();
-                    // Object.keys(fields).forEach(fid => fields[fid].classList.remove('input-success'));
-
-                    console.log('✅ Login successful for user:', usernameValue);
-                } else {
-                    // Focus the first field with an error
-                    const firstErrorField = Object.keys(fields).find(fid =>
-                        fields[fid].classList.contains('input-error')
-                    );
-                    if (firstErrorField) {
-                        fields[firstErrorField].focus();
+                try {
+                    const result = window.QMSL.login(username, password);
+                    if (result) {
+                        successMsg.textContent = 'Login successful. Redirecting...';
+                        successMsg.classList.add('show');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    } else {
+                        showError('username', 'Invalid username or password.');
                     }
-
-                    // Scroll to the first visible error message
-                    const firstErrorSpan = document.querySelector('.error-message.visible');
-                    if (firstErrorSpan) {
-                        firstErrorSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                } catch (err) {
+                    console.error('Login error:', err);
+                    showError('username', 'Login failed. Please try again.');
                 }
             });
-
-            console.log('🔐 AutoMarket Hub — Seller Login Page Ready');
         })();
     </script>
 </body>
