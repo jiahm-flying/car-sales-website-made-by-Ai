@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加车辆 | Add Car</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a; /* 极简深黑 */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 容器样式 */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #111; /* 稍浅一点的黑色做区分 */
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #222; /* 极其微弱的边框线 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-align: center;
+            color: #eee;
+        }
+
+        /* 表单组样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        /* 鼠标聚焦时的效果 */
+        input:focus {
+            border-color: #555;
+            background: #222;
+        }
+
+        /* 文件上传特殊样式 */
+        input[type="file"] {
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 按钮样式 */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ADD NEW CAR</h2>
+    <form action="#">
+        <div class="form-group">
+            <label for="colour">Colour</label>
+            <input type="text" id="colour" name="colour" placeholder="e.g. Matte Black">
+        </div>
+
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" id="model" name="model" placeholder="e.g. Porsche 911">
+        </div>
+
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" id="year" name="year" placeholder="2024">
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" placeholder="e.g. London, UK">
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price ($)</label>
+            <input type="number" id="price" name="price" placeholder="0.00">
+        </div>
+
+        <div class="form-group">
+            <label for="image">Image of Car</label>
+            <input type="file" id="image" name="image" accept="image/*">
+        </div>
+
+        <button type="submit" class="submit-btn">ADD CAR</button>
+    </form>
+</div>
+
+</body>
+</html>
