@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | QMSL</title>
+    <title>Register | QMSL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
@@ -45,6 +45,7 @@
             letter-spacing: 0.02em;
         }
 
+        /* ── Fixed Navbar ─────────────────────── */
         .navbar {
             position: fixed;
             top: 0;
@@ -93,6 +94,7 @@
         }
         .nav-links a:hover { color: #ffffff; }
 
+        /* ── Main Content ─────────────────────── */
         .main-content {
             flex: 1;
             display: flex;
@@ -109,14 +111,14 @@
             width: 100%;
         }
 
-        .login-card {
+        .register-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-black);
             border-radius: 16px;
             padding: 48px;
-            max-width: 460px;
+            max-width: 560px;
             margin: 0 auto;
             width: 100%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
@@ -238,6 +240,7 @@
             opacity: 0.7;
         }
 
+        /* ── Footer ──────────────────────────── */
         .footer {
             background-color: #0a0a0a;
             padding: 48px 0;
@@ -259,7 +262,7 @@
             .nav-links {
                 gap: 1.5rem;
             }
-            .login-card {
+            .register-card {
                 padding: 32px 24px;
             }
         }
@@ -267,13 +270,14 @@
             .main-content {
                 padding: 120px 16px 40px;
             }
-            .login-card {
+            .register-card {
                 padding: 28px 20px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">QMSL</a>
@@ -287,32 +291,54 @@
         </div>
     </nav>
 
+    <!-- Main Content -->
     <main class="main-content">
-        <div class="login-card">
+        <div class="register-card">
             <div class="success-msg" id="successMsg"></div>
             <div class="card-header">
-                <h1>SELLER LOGIN</h1>
-                <p class="subtitle">Sign in to manage your vehicles</p>
+                <h1>SELLER REGISTRATION</h1>
+                <p class="subtitle">Create your account to list vehicles</p>
             </div>
-            <form id="loginForm" novalidate>
+            <form id="registerForm" method="POST" action="register.php" novalidate>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g. Zhang Wei" autocomplete="name" maxlength="80" required>
+                    <div class="error-message" id="name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" placeholder="e.g. 123 Chaoyang Road Apt 4B" maxlength="150" required>
+                    <div class="error-message" id="address-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g. 13812345678" maxlength="11" inputmode="numeric" required>
+                    <div class="error-message" id="phone-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="e.g. seller@example.com" maxlength="120" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" maxlength="40" required>
+                    <input type="text" id="username" name="username" placeholder="At least 6 alphanumeric characters" maxlength="40" required>
                     <div class="error-message" id="username-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" maxlength="60" required>
+                    <input type="password" id="password" name="password" placeholder="At least 6 alphanumeric characters" maxlength="60" required>
                     <div class="error-message" id="password-error"></div>
                 </div>
-                <button type="submit" class="btn-submit">LOG IN</button>
+                <button type="submit" class="btn-submit">CREATE ACCOUNT</button>
             </form>
             <div class="card-footer">
-                Don't have an account? <a href="register.html">Register here</a>
+                Already have an account? <a href="login.php">Sign in</a>
             </div>
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>© 2025 QMSL. All rights reserved.</p>
@@ -323,15 +349,32 @@
         (function() {
             'use strict';
 
-            const form = document.getElementById('loginForm');
+            const form = document.getElementById('registerForm');
             const successMsg = document.getElementById('successMsg');
             const fields = {
+                name: document.getElementById('name'),
+                address: document.getElementById('address'),
+                phone: document.getElementById('phone'),
+                email: document.getElementById('email'),
                 username: document.getElementById('username'),
                 password: document.getElementById('password')
             };
             const errors = {
+                name: document.getElementById('name-error'),
+                address: document.getElementById('address-error'),
+                phone: document.getElementById('phone-error'),
+                email: document.getElementById('email-error'),
                 username: document.getElementById('username-error'),
                 password: document.getElementById('password-error')
+            };
+
+            const validators = {
+                name: { regex: /^[A-Za-z ]+$/, emptyMsg: 'Name is required.', invalidMsg: 'Only letters and spaces allowed.' },
+                address: { regex: /^[A-Za-z0-9 ]+$/, emptyMsg: 'Address is required.', invalidMsg: 'Only letters, numbers, and spaces allowed.' },
+                phone: { regex: /^1[3-9]\d{9}$/, emptyMsg: 'Phone number is required.', invalidMsg: 'Invalid China mobile number (11 digits, starts with 1).' },
+                email: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, emptyMsg: 'Email is required.', invalidMsg: 'Invalid email format.' },
+                username: { regex: /^[A-Za-z0-9]{6,}$/, emptyMsg: 'Username is required.', invalidMsg: 'At least 6 alphanumeric characters.' },
+                password: { regex: /^[A-Za-z0-9]{6,}$/, emptyMsg: 'Password is required.', invalidMsg: 'At least 6 alphanumeric characters.' }
             };
 
             function showError(fieldId, message) {
@@ -345,41 +388,22 @@
 
             function validateField(fieldId) {
                 const value = fields[fieldId].value.trim();
-                const label = fieldId === 'username' ? 'Username' : 'Password';
-                if (!value) {
-                    showError(fieldId, `${label} is required.`);
-                    return false;
-                }
+                const cfg = validators[fieldId];
+                if (!value) { showError(fieldId, cfg.emptyMsg); return false; }
+                if (!cfg.regex.test(value)) { showError(fieldId, cfg.invalidMsg); return false; }
                 clearError(fieldId);
                 return true;
             }
 
             function validateAll() {
                 let valid = true;
-                Object.keys(fields).forEach(fid => {
-                    if (!validateField(fid)) valid = false;
-                });
+                Object.keys(fields).forEach(fid => { if (!validateField(fid)) valid = false; });
                 return valid;
-            }
-
-            async function checkAuth() {
-                try {
-                    const response = await fetch('./api/auth/me.php', {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-                    const result = await response.json();
-                    if (result.ok) {
-                        window.location.href = 'index.html';
-                    }
-                } catch (err) {
-                    console.error('Auth check failed:', err);
-                }
             }
 
             Object.keys(fields).forEach(fid => {
                 fields[fid].addEventListener('input', function() {
-                    if (this.value.trim() !== '') clearError(fid);
+                    if (this.value.trim() !== '') validateField(fid); else clearError(fid);
                     successMsg.classList.remove('show');
                 });
                 fields[fid].addEventListener('blur', function() {
@@ -387,116 +411,20 @@
                 });
             });
 
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                successMsg.classList.remove('show');
-                if (!validateAll()) return;
-
-                const username = fields.username.value.trim();
-                const password = fields.password.value.trim();
-
-                try {
-                    const response = await fetch('./api/auth/login.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ username, password })
-                    });
-                    const result = await response.json();
-
-                    if (result.ok) {
-                        successMsg.textContent = 'Login successful. Redirecting...';
-                        successMsg.classList.add('show');
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1000);
-                    } else {
-                        showError('username', result.message || 'Invalid username or password.');
-                    }
-                } catch (err) {
-                    console.error('Login error:', err);
-                    showError('username', 'Login failed. Please try again.');
-                }
+            ['username', 'password'].forEach(fid => {
+                fields[fid].addEventListener('input', function() { this.value = this.value.replace(/\s/g, ''); });
             });
+            fields.phone.addEventListener('input', function() { this.value = this.value.replace(/\D/g, '').slice(0, 11); });
 
-            checkAuth();
-        })();
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录 - PHP MySQL Demo</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 420px; margin: 48px auto; padding: 0 16px; }
-        h1 { margin-bottom: 20px; }
-        .field { margin-bottom: 14px; }
-        label { display: block; margin-bottom: 6px; font-size: 14px; }
-        input { width: 100%; padding: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; cursor: pointer; }
-        .msg { margin-top: 12px; font-size: 14px; }
-        .ok { color: #0a7f37; }
-        .err { color: #cc1f1f; }
-    </style>
-</head>
-<body>
-    <h1>登录</h1>
-    <form id="loginForm">
-        <div class="field">
-            <label for="username">用户名</label>
-            <input id="username" name="username" maxlength="40" required>
-        </div>
-        <div class="field">
-            <label for="password">密码</label>
-            <input id="password" name="password" type="password" maxlength="60" required>
-        </div>
-        <button type="submit">登录</button>
-    </form>
-    <p class="msg" id="msg"></p>
-    <p><a href="./register.html">没有账号？去注册</a></p>
-
-    <script>
-        const form = document.getElementById('loginForm');
-        const msg = document.getElementById('msg');
-
-        function setMessage(text, success) {
-            msg.textContent = text;
-            msg.className = 'msg ' + (success ? 'ok' : 'err');
-        }
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setMessage('', false);
-
-            const username = form.username.value.trim();
-            const password = form.password.value.trim();
-
-            if (!username || !password) {
-                setMessage('用户名和密码不能为空。', false);
-                return;
-            }
-
-            try {
-                const res = await fetch('./api/auth/login.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ username, password })
-                });
-                const result = await res.json();
-                if (result.ok) {
-                    setMessage('登录成功。', true);
-                } else {
-                    setMessage(result.message || '登录失败。', false);
+            form.addEventListener('submit', function(e) {
+                successMsg.classList.remove('show');
+                if (!validateAll()) {
+                    e.preventDefault();
+                    return;
                 }
-            } catch (err) {
-                setMessage('请求失败，请检查 PHP 服务是否运行。', false);
-                console.error(err);
-            }
-        });
+                // 校验通过：浏览器原生 POST 提交到 register.php，数据写入 MySQL
+            });
+        })();
     </script>
 </body>
 </html>
