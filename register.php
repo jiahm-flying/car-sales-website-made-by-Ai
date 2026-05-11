@@ -54,31 +54,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($exists) {
             $error = 'Username or email already exists.';
         } else {
+            // id 为 varchar 主键：按队友约定自动生成 u1、u2、u3 的下一个 uN（仅统计形如 u 后跟纯数字的 id）
             $inserted = false;
-            try {
-                $stmt = $pdo->prepare(
-                    'INSERT INTO users (name, address, phone, email, username, password)
-                     VALUES (?, ?, ?, ?, ?, ?)'
-                );
-                $stmt->execute([$name, $address, $phone, $email, $username, $password]);
-                $inserted = true;
-            } catch (PDOException $e) {
-                $msg = $e->getMessage();
-                if (stripos($msg, 'password') !== false && stripos($msg, 'Unknown column') !== false) {
-                    try {
-                        $hash = password_hash($password, PASSWORD_DEFAULT);
-                        $stmt2 = $pdo->prepare(
-                            'INSERT INTO users (name, address, phone, email, username, password_hash)
-                             VALUES (?, ?, ?, ?, ?, ?)'
-                        );
-                        $stmt2->execute([$name, $address, $phone, $email, $username, $hash]);
-                        $inserted = true;
-                    } catch (PDOException $e2) {
-                        $error = 'Database error: ' . $e2->getMessage();
+            $idAttempts = 0;
+            while (!$inserted && $idAttempts < 12) {
+                $idAttempts++;
+                $idStmt = $pdo->query("SELECT id FROM users WHERE id LIKE 'u%'");
+                $maxUN = 0;
+                while ($idRow = $idStmt->fetch(PDO::FETCH_ASSOC)) {
+                    if (preg_match('/^u(\d+)$/', $idRow['id'], $m)) {
+                        $maxUN = max($maxUN, (int) $m[1]);
                     }
-                } else {
-                    $error = 'Database error: ' . $msg;
                 }
+                $newId = 'u' . ($maxUN + 1);
+                if (strlen($newId) > 20) {
+                    $error = 'User id too long for database.';
+                    break;
+                }
+
+                try {
+                    $stmt = $pdo->prepare(
+                        'INSERT INTO users (id, name, address, phone, email, username, password)
+                         VALUES (?, ?, ?, ?, ?, ?, ?)'
+                    );
+                    $stmt->execute([$newId, $name, $address, $phone, $email, $username, $password]);
+                    $inserted = true;
+                } catch (PDOException $e) {
+                    $msg = $e->getMessage();
+                    $mysqlErr = isset($e->errorInfo[1]) ? (int) $e->errorInfo[1] : 0;
+                    if ($mysqlErr === 1062) {
+                        continue;
+                    }
+                    if (stripos($msg, 'password') !== false && stripos($msg, 'Unknown column') !== false) {
+                        try {
+                            $hash = password_hash($password, PASSWORD_DEFAULT);
+                            $stmt2 = $pdo->prepare(
+                                'INSERT INTO users (id, name, address, phone, email, username, password_hash)
+                                 VALUES (?, ?, ?, ?, ?, ?, ?)'
+                            );
+                            $stmt2->execute([$newId, $name, $address, $phone, $email, $username, $hash]);
+                            $inserted = true;
+                        } catch (PDOException $e2) {
+                            $mysqlErr2 = isset($e2->errorInfo[1]) ? (int) $e2->errorInfo[1] : 0;
+                            if ($mysqlErr2 === 1062) {
+                                continue;
+                            }
+                            $error = 'Database error: ' . $e2->getMessage();
+                            break;
+                        }
+                    } else {
+                        $error = 'Database error: ' . $msg;
+                        break;
+                    }
+                }
+            }
+            if (!$inserted && $error === '' && $idAttempts >= 12) {
+                $error = 'Could not allocate user id, please try again.';
             }
 
             if ($inserted) {
