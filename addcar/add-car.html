@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Car | QMSL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* --- NAVIGATION (FIXED COMPONENT) --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1000;
+            padding: 18px 0;
+            transition: all 0.2s ease;
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .logo:hover { opacity: 0.75; }
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #ffffff; }
+
+        /* --- HERO SECTION (BLACK ZONE) --- */
+        .hero-section {
+            padding-top: 180px;
+            padding-bottom: 100px;
+            background-color: #000;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero-section p {
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.1em;
+            font-weight: 300;
+        }
+
+        /* --- FORM SECTION (WHITE ZONE) --- */
+        .form-section {
+            background-color: #ffffff;
+            padding: 100px 0;
+            color: #000;
+        }
+
+        .form-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 60px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #000;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #000;
+            background: #fff;
+        }
+
+        .error-msg {
+            color: #000;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-submit {
+            width: 100%;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.85;
+        }
+
+        /* --- FOOTER (FIXED COMPONENT) --- */
+        .footer {
+            background-color: #0a0a0a;
+            padding: 48px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .car-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 22px;
+            }
+            .search-hero {
+                padding: 48px 0 56px;
+                min-height: auto;
+            }
+            .search-hero-title {
+                font-size: 2.2rem;
+            }
+            .search-panel {
+                padding: 24px 24px;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            .navbar {
+                padding: 14px 0;
+            }
+            .nav-container {
+                padding: 0 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .logo {
+                font-size: 1.5rem;
+            }
+            .nav-links {
+                gap: 1.5rem;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .search-hero {
+                padding: 40px 0 50px;
+                min-height: auto;
+            }
+            .search-hero-title {
+                font-size: 1.8rem;
+            }
+            .search-hero-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 24px;
+            }
+            .search-panel {
+                padding: 20px 18px;
+                gap: 14px;
+            }
+            .search-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .search-field {
+                min-width: 100%;
+            }
+            .search-actions {
+                flex-direction: row;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .search-actions button {
+                flex: 1;
+                white-space: normal;
+                text-align: center;
+            }
+            .car-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+            .container {
+                padding: 0 20px;
+            }
+            .results-section {
+                padding: 40px 0 50px;
+            }
+            .results-header {
+                margin-bottom: 24px;
+            }
+            .empty-state {
+                padding: 60px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .car-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .search-hero-title {
+                font-size: 1.6rem;
+            }
+            .search-panel {
+                padding: 16px 14px;
+                gap: 12px;
+            }
+            .search-field input {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark {
+                padding: 12px 16px;
+                font-size: 0.8rem;
+                letter-spacing: 0.06em;
+            }
+            .card-body {
+                padding: 16px 18px 18px;
+                gap: 6px;
+            }
+            .car-title {
+                font-size: 1rem;
+            }
+            .price {
+                font-size: 1.1rem;
+            }
+            .modal-panel {
+                max-width: 100%;
+                margin: 0 8px;
+            }
+            .modal-body {
+                padding: 20px 18px 24px;
+            }
+            .modal-title {
+                font-size: 1.3rem;
+            }
+            .modal-specs {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .modal-price-large {
+                font-size: 1.5rem;
+            }
+            .modal-description {
+                font-size: 0.85rem;
+            }
+            .modal-contact {
+                font-size: 0.8rem;
+            }
+            .modal-close {
+                top: 12px;
+                right: 12px;
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 64px;
+            }
+            .container {
+                padding: 0 14px;
+            }
+            .navbar {
+                padding: 10px 0;
+            }
+            .nav-container {
+                padding: 0 14px;
+                gap: 8px;
+            }
+            .logo {
+                font-size: 1.3rem;
+                letter-spacing: 0.08em;
+            }
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.05em;
+            }
+
+            .search-hero {
+                padding: 32px 0 40px;
+            }
+            .search-hero-title {
+                font-size: 1.5rem;
+                letter-spacing: 0.05em;
+            }
+            .search-hero-subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 20px;
+            }
+            .search-panel {
+                padding: 14px 12px;
+                gap: 10px;
+            }
+            .search-field label {
+                font-size: 0.65rem;
+            }
+            .search-field input {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            .search-actions {
+                gap: 8px;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark {
+                padding: 10px 14px;
+                font-size: 0.75rem;
+            }
+
+            .results-section {
+                padding: 30px 0 40px;
+            }
+            .results-count {
+                font-size: 0.95rem;
+            }
+            .car-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .card-body {
+                padding: 14px 14px 16px;
+                gap: 4px;
+            }
+            .car-title {
+                font-size: 0.95rem;
+            }
+            .car-meta {
+                font-size: 0.7rem;
+                gap: 10px;
+            }
+            .car-meta span+span::before {
+                left: -7px;
+            }
+            .car-details {
+                font-size: 0.7rem;
+            }
+            .price {
+                font-size: 1rem;
+            }
+            .location {
+                font-size: 0.7rem;
+            }
+
+            .modal-overlay {
+                padding: 12px;
+            }
+            .modal-panel {
+                max-height: 85vh;
+            }
+            .modal-img {
+                aspect-ratio: 4/3;
+            }
+            .modal-body {
+                padding: 16px 14px 20px;
+            }
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            .modal-subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 14px;
+            }
+            .modal-specs {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 14px 0;
+                margin-bottom: 18px;
+            }
+            .modal-spec-label {
+                font-size: 0.6rem;
+            }
+            .modal-spec-value {
+                font-size: 0.85rem;
+            }
+            .modal-price-large {
+                font-size: 1.3rem;
+                margin-bottom: 14px;
+            }
+            .modal-description {
+                font-size: 0.8rem;
+                line-height: 1.6;
+            }
+            .modal-contact {
+                font-size: 0.75rem;
+            }
+            .modal-close {
+                top: 10px;
+                right: 10px;
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            .empty-state {
+                padding: 40px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .search-hero-title {
+                font-size: 1.3rem;
+            }
+            .search-field input {
+                padding: 8px 10px;
+                font-size: 0.75rem;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark {
+                padding: 8px 10px;
+                font-size: 0.7rem;
+                letter-spacing: 0.04em;
+            }
+            .car-title {
+                font-size: 0.9rem;
+            }
+            .price {
+                font-size: 0.95rem;
+            }
+            .modal-title {
+                font-size: 1.1rem;
+            }
+            .modal-price-large {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .car-card {
+                cursor: default;
+            }
+            .btn-primary-dark,
+            .btn-ghost-dark,
+            .modal-close {
+                min-height: 44px;
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .nav-links a {
+                padding: 6px 0;
+                display: inline-block;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .car-card {
+                animation: none;
+            }
+            * {
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">QMSL</a>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="search.html">SEARCH</a></li>
+            <li><a href="add-car.html">ADD CAR</a></li>
+            <li><a href="inventory.html">INVENTORY</a></li>
+            <li><a href="login.html">LOGIN</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="container">
+        <h1>List Your Vehicle</h1>
+        <p>CONVERT ASSETS TO CAPITAL WITH INDUSTRIAL PRECISION</p>
+    </div>
+</section>
+
+<section class="form-section">
+    <div class="container">
+        <div class="form-card">
+            <form id="addCarForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" placeholder="e.g. Porsche" required>
+                        <div class="error-msg" id="brandError">Field required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" id="model" placeholder="e.g. 911 Turbo S" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" id="year" placeholder="2024" min="1900" max="2026" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price ($)</label>
+                        <input type="number" id="price" placeholder="150000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mileage">Mileage (mi)</label>
+                        <input type="number" id="mileage" placeholder="500" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <input type="text" id="color" placeholder="Obsidian Black" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="San Francisco, CA" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="image">Image URL (Optional)</label>
+                        <input type="url" id="image" placeholder="https://images.unsplash.com/...">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Initialize Listing</button>
+                <div id="statusMessage" style="text-align: center; margin-top: 20px; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;"></div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 QMSL. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('addCarForm');
+        const statusMsg = document.getElementById('statusMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const brand = document.getElementById('brand').value.trim();
+            const model = document.getElementById('model').value.trim();
+            const year = parseInt(document.getElementById('year').value);
+            const price = parseFloat(document.getElementById('price').value);
+            const mileage = parseInt(document.getElementById('mileage').value);
+            const color = document.getElementById('color').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const imageInput = document.getElementById('image').value.trim();
+
+            const image = imageInput || `https://placehold.co/600x400/1a1a1a/ffffff?text=${encodeURIComponent(brand + ' ' + model)}`;
+
+            const carData = {
+                brand: brand,
+                model: model,
+                year: year,
+                price: price,
+                mileage: mileage,
+                color: color,
+                location: location,
+                image: image
+            };
+
+            if (!brand || !model || isNaN(year) || isNaN(price) || isNaN(mileage) || !color || !location) {
+                statusMsg.textContent = "Error: Invalid parameters provided.";
+                return;
+            }
+
+            if (year < 1900 || year > 2026) {
+                statusMsg.textContent = "Error: Year must be between 1900 and 2026.";
+                return;
+            }
+
+            if (price <= 0) {
+                statusMsg.textContent = "Error: Price must be greater than 0.";
+                return;
+            }
+
+            if (mileage < 0) {
+                statusMsg.textContent = "Error: Mileage cannot be negative.";
+                return;
+            }
+
+            statusMsg.textContent = "Processing...";
+
+            try {
+                const response = await fetch('php/add_car.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(carData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusMsg.textContent = "Success: Vehicle integrated into inventory.";
+
+                    setTimeout(() => {
+                        window.location.href = 'inventory.html';
+                    }, 1500);
+                } else {
+                    statusMsg.textContent = "Error: " + result.message;
+                }
+            } catch (error) {
+                console.error('Request error:', error);
+                statusMsg.textContent = "Error: Unable to connect to server.";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
