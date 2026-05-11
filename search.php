@@ -793,11 +793,11 @@ $connection->close();
         <div class="nav-container">
             <a href="index.html" class="logo">QMSL</a>
             <ul class="nav-links">
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="search.html">SEARCH</a></li>
-                <li><a href="add-car.html">ADD CAR</a></li>
-                <li><a href="inventory.html">INVENTORY</a></li>
-                <li><a href="login.html">LOGIN</a></li>
+                <li><a href="index.php">HOME</a></li>
+                <li><a href="search.php">SEARCH</a></li>
+                <li><a href="add-car.php">ADD CAR</a></li>
+                <li><a href="inventory.php">INVENTORY</a></li>
+                <li><a href="login.php">LOGIN</a></li>
             </ul>
         </div>
     </nav>
@@ -1104,9 +1104,7 @@ $connection->close();
                     '<div class="modal-spec-item"><span class="modal-spec-label">Location</span><span class="modal-spec-value">' + car.location + '</span></div>' +
                     '<div class="modal-spec-item"><span class="modal-spec-label">Transmission</span><span class="modal-spec-value">' + (car.transmission || 'N/A') + '</span></div>' +
                     '<div class="modal-spec-item"><span class="modal-spec-label">Fuel Type</span><span class="modal-spec-value">' + (car.fuelType || 'N/A') + '</span></div>' +
-                    '<div class="modal-spec-item"><span class="modal-spec-label">Engine</span><span class="modal-spec-value">' + (car.engine || 'N/A') + '</span></div>' +
                     '<div class="modal-spec-item"><span class="modal-spec-label">Drivetrain</span><span class="modal-spec-value">' + (car.drivetrain || 'N/A') + '</span></div>' +
-                    '<div class="modal-spec-item"><span class="modal-spec-label">VIN</span><span class="modal-spec-value" style="font-size:0.78rem;letter-spacing:0.06em;">' + (car.vin || 'N/A') + '</span></div>' +
                     '</div>' +
                     '<p class="modal-description">' + (car.description || 'No description available.') + '</p>' +
                     '<p class="modal-contact">Seller contact: <strong>' + (car.phone || 'N/A') + '</strong></p>';
