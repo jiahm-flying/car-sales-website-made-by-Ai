@@ -45,7 +45,6 @@
             letter-spacing: 0.02em;
         }
 
-        /* ── Fixed Navbar ─────────────────────── */
         .navbar {
             position: fixed;
             top: 0;
@@ -94,7 +93,6 @@
         }
         .nav-links a:hover { color: #ffffff; }
 
-        /* ── Main Content ─────────────────────── */
         .main-content {
             flex: 1;
             display: flex;
@@ -240,7 +238,6 @@
             opacity: 0.7;
         }
 
-        /* ── Footer ──────────────────────────── */
         .footer {
             background-color: #0a0a0a;
             padding: 48px 0;
@@ -277,7 +274,6 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">QMSL</a>
@@ -291,7 +287,6 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="login-card">
             <div class="success-msg" id="successMsg"></div>
@@ -318,140 +313,15 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>© 2025 QMSL. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- ══════════════ QMSL Shared Module (inline) ══════════════ -->
-    <script>
-        // 共享数据模块 QMSL，内嵌于页面，不再需要外部 js/qmsl.js
-        (function() {
-            'use strict';
-
-            // 初始化默认数据
-            function initData() {
-                if (!localStorage.getItem('qmsl_users')) {
-                    const defaultUsers = [
-                        { id: 'u1', name: 'Alice Johnson', address: '123 Main St', phone: '13812345678', email: 'alice@example.com', username: 'alice', password: 'password1' },
-                        { id: 'u2', name: 'Bob Smith', address: '456 Oak Ave', phone: '13912345678', email: 'bob@example.com', username: 'bob', password: 'password2' },
-                        { id: 'u3', name: 'Charlie Lee', address: '789 Pine Rd', phone: '13712345678', email: 'charlie@example.com', username: 'charlie', password: 'password3' }
-                    ];
-                    localStorage.setItem('qmsl_users', JSON.stringify(defaultUsers));
-                }
-                if (!localStorage.getItem('qmsl_cars')) {
-                    const defaultCars = [
-                        { id: 'c1', sellerId: 'u1', brand: 'BMW', model: 'M4', year: 2022, price: 72000, mileage: 15000, color: 'Black', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=BMW+M4' },
-                        { id: 'c2', sellerId: 'u1', brand: 'Audi', model: 'RS5', year: 2021, price: 68000, mileage: 22000, color: 'White', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Audi+RS5' },
-                        { id: 'c3', sellerId: 'u2', brand: 'Mercedes', model: 'AMG GT', year: 2023, price: 95000, mileage: 8000, color: 'Silver', location: 'Guangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Mercedes+AMG+GT' },
-                        { id: 'c4', sellerId: 'u2', brand: 'Porsche', model: '911', year: 2022, price: 110000, mileage: 12000, color: 'Black', location: 'Shenzhen', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Porsche+911' },
-                        { id: 'c5', sellerId: 'u3', brand: 'Tesla', model: 'Model S', year: 2023, price: 85000, mileage: 5000, color: 'White', location: 'Chengdu', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Tesla+Model+S' },
-                        { id: 'c6', sellerId: 'u3', brand: 'Lexus', model: 'LC 500', year: 2021, price: 78000, mileage: 18000, color: 'Gray', location: 'Hangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Lexus+LC+500' },
-                        { id: 'c7', sellerId: 'u1', brand: 'Ford', model: 'Mustang GT', year: 2022, price: 55000, mileage: 25000, color: 'Red', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Ford+Mustang+GT' },
-                        { id: 'c8', sellerId: 'u2', brand: 'Chevrolet', model: 'Corvette', year: 2023, price: 92000, mileage: 6000, color: 'Black', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Chevrolet+Corvette' }
-                    ];
-                    localStorage.setItem('qmsl_cars', JSON.stringify(defaultCars));
-                }
-            }
-            initData();
-
-            window.QMSL = {
-                // 注册
-                register: function(name, address, phone, email, username, password) {
-                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
-                    if (users.find(u => u.username === username)) return false;
-                    const newUser = {
-                        id: 'u' + Date.now(),
-                        name, address, phone, email, username, password
-                    };
-                    users.push(newUser);
-                    localStorage.setItem('qmsl_users', JSON.stringify(users));
-                    // 自动登录
-                    sessionStorage.setItem('qmsl_currentUser', JSON.stringify(newUser));
-                    return true;
-                },
-                // 登录
-                login: function(username, password) {
-                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
-                    const user = users.find(u => u.username === username && u.password === password);
-                    if (user) {
-                        sessionStorage.setItem('qmsl_currentUser', JSON.stringify(user));
-                        return true;
-                    }
-                    return false;
-                },
-                // 登出
-                logout: function() {
-                    sessionStorage.removeItem('qmsl_currentUser');
-                },
-                // 获取当前登录用户
-                getCurrentUser: function() {
-                    const stored = sessionStorage.getItem('qmsl_currentUser');
-                    return stored ? JSON.parse(stored) : null;
-                },
-                // 添加车辆
-                addCar: function(sellerId, brand, model, year, price, mileage, color, location, image) {
-                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    const newCar = {
-                        id: 'c' + Date.now(),
-                        sellerId,
-                        brand,
-                        model,
-                        year: parseInt(year),
-                        price: parseFloat(price),
-                        mileage: parseInt(mileage),
-                        color,
-                        location,
-                        image: image || `https://placehold.co/600x400/1a1a1a/ffffff?text=${encodeURIComponent(brand + '+' + model)}`
-                    };
-                    cars.push(newCar);
-                    localStorage.setItem('qmsl_cars', JSON.stringify(cars));
-                    return newCar;
-                },
-                // 搜索车辆
-                searchCars: function(filters) {
-                    let cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    const { keyword, minPrice, maxPrice, minYear, maxYear } = filters;
-                    if (keyword) {
-                        const kw = keyword.toLowerCase();
-                        cars = cars.filter(c => 
-                            c.brand.toLowerCase().includes(kw) ||
-                            c.model.toLowerCase().includes(kw) ||
-                            c.location.toLowerCase().includes(kw)
-                        );
-                    }
-                    if (minPrice) cars = cars.filter(c => c.price >= parseFloat(minPrice));
-                    if (maxPrice) cars = cars.filter(c => c.price <= parseFloat(maxPrice));
-                    if (minYear) cars = cars.filter(c => c.year >= parseInt(minYear));
-                    if (maxYear) cars = cars.filter(c => c.year <= parseInt(maxYear));
-                    return cars;
-                },
-                // 获取某卖家的车
-                getCarsBySeller: function(sellerId) {
-                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    return cars.filter(c => c.sellerId === sellerId);
-                },
-                // 获取所有车
-                getAllCars: function() {
-                    return JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                }
-            };
-        })();
-    </script>
-
-    <!-- ══════════════ Login Logic ══════════════ -->
     <script>
         (function() {
             'use strict';
-
-            // 如果已经登录，直接跳转首页
-            const currentUser = window.QMSL.getCurrentUser();
-            if (currentUser) {
-                window.location.href = 'index.html';
-                return;
-            }
 
             const form = document.getElementById('loginForm');
             const successMsg = document.getElementById('successMsg');
@@ -492,6 +362,21 @@
                 return valid;
             }
 
+            async function checkAuth() {
+                try {
+                    const response = await fetch('./api/auth/me.php', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    const result = await response.json();
+                    if (result.ok) {
+                        window.location.href = 'index.html';
+                    }
+                } catch (err) {
+                    console.error('Auth check failed:', err);
+                }
+            }
+
             Object.keys(fields).forEach(fid => {
                 fields[fid].addEventListener('input', function() {
                     if (this.value.trim() !== '') clearError(fid);
@@ -502,7 +387,7 @@
                 });
             });
 
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 successMsg.classList.remove('show');
                 if (!validateAll()) return;
@@ -511,22 +396,107 @@
                 const password = fields.password.value.trim();
 
                 try {
-                    const result = window.QMSL.login(username, password);
-                    if (result) {
+                    const response = await fetch('./api/auth/login.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ username, password })
+                    });
+                    const result = await response.json();
+
+                    if (result.ok) {
                         successMsg.textContent = 'Login successful. Redirecting...';
                         successMsg.classList.add('show');
                         setTimeout(() => {
                             window.location.href = 'index.html';
                         }, 1000);
                     } else {
-                        showError('username', 'Invalid username or password.');
+                        showError('username', result.message || 'Invalid username or password.');
                     }
                 } catch (err) {
                     console.error('Login error:', err);
                     showError('username', 'Login failed. Please try again.');
                 }
             });
+
+            checkAuth();
         })();
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - PHP MySQL Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 420px; margin: 48px auto; padding: 0 16px; }
+        h1 { margin-bottom: 20px; }
+        .field { margin-bottom: 14px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; }
+        input { width: 100%; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; cursor: pointer; }
+        .msg { margin-top: 12px; font-size: 14px; }
+        .ok { color: #0a7f37; }
+        .err { color: #cc1f1f; }
+    </style>
+</head>
+<body>
+    <h1>登录</h1>
+    <form id="loginForm">
+        <div class="field">
+            <label for="username">用户名</label>
+            <input id="username" name="username" maxlength="40" required>
+        </div>
+        <div class="field">
+            <label for="password">密码</label>
+            <input id="password" name="password" type="password" maxlength="60" required>
+        </div>
+        <button type="submit">登录</button>
+    </form>
+    <p class="msg" id="msg"></p>
+    <p><a href="./register.html">没有账号？去注册</a></p>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const msg = document.getElementById('msg');
+
+        function setMessage(text, success) {
+            msg.textContent = text;
+            msg.className = 'msg ' + (success ? 'ok' : 'err');
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setMessage('', false);
+
+            const username = form.username.value.trim();
+            const password = form.password.value.trim();
+
+            if (!username || !password) {
+                setMessage('用户名和密码不能为空。', false);
+                return;
+            }
+
+            try {
+                const res = await fetch('./api/auth/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await res.json();
+                if (result.ok) {
+                    setMessage('登录成功。', true);
+                } else {
+                    setMessage(result.message || '登录失败。', false);
+                }
+            } catch (err) {
+                setMessage('请求失败，请检查 PHP 服务是否运行。', false);
+                console.error(err);
+            }
+        });
     </script>
 </body>
 </html>
