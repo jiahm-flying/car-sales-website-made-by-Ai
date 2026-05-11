@@ -256,7 +256,7 @@ $userName = $_SESSION['user']['name'] ?? '';
         <span class="closebtn" onclick="closeNav()">&times;</span>
         <img src="logo.png" alt="qmsl Logo" class="sidebar-logo" id="sidebarLogo">
         <a href="search.php">Search</a>
-        <a href="add-car.html">Add Car</a>
+        <a href="add-car.php">Add Car</a>
         <a href="inventory.php">Inventory</a>
         <a href="login.php">Log in</a>
         <a href="register.php">Register</a>
