@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register | QMSL</title>
-    <meta http-equiv="refresh" content="0; url=register.php">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
@@ -300,7 +299,7 @@
                 <h1>SELLER REGISTRATION</h1>
                 <p class="subtitle">Create your account to list vehicles</p>
             </div>
-            <form id="registerForm" novalidate>
+            <form id="registerForm" method="POST" action="register.php" novalidate>
                 <div class="form-group">
                     <label for="name">Full Name</label>
                     <input type="text" id="name" name="name" placeholder="e.g. Zhang Wei" autocomplete="name" maxlength="80" required>
@@ -334,7 +333,7 @@
                 <button type="submit" class="btn-submit">CREATE ACCOUNT</button>
             </form>
             <div class="card-footer">
-                Already have an account? <a href="login.html">Sign in</a>
+                Already have an account? <a href="login.php">Sign in</a>
             </div>
         </div>
     </main>
@@ -346,123 +345,9 @@
         </div>
     </footer>
 
-    <!-- ══════════════ QMSL Shared Module (inline) ══════════════ -->
-    <script>
-        // 共享数据模块 QMSL（与 login.html 完全相同）
-        (function() {
-            'use strict';
-
-            function initData() {
-                if (!localStorage.getItem('qmsl_users')) {
-                    const defaultUsers = [
-                        { id: 'u1', name: 'Alice Johnson', address: '123 Main St', phone: '13812345678', email: 'alice@example.com', username: 'alice', password: 'password1' },
-                        { id: 'u2', name: 'Bob Smith', address: '456 Oak Ave', phone: '13912345678', email: 'bob@example.com', username: 'bob', password: 'password2' },
-                        { id: 'u3', name: 'Charlie Lee', address: '789 Pine Rd', phone: '13712345678', email: 'charlie@example.com', username: 'charlie', password: 'password3' }
-                    ];
-                    localStorage.setItem('qmsl_users', JSON.stringify(defaultUsers));
-                }
-                if (!localStorage.getItem('qmsl_cars')) {
-                    const defaultCars = [
-                        { id: 'c1', sellerId: 'u1', brand: 'BMW', model: 'M4', year: 2022, price: 72000, mileage: 15000, color: 'Black', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=BMW+M4' },
-                        { id: 'c2', sellerId: 'u1', brand: 'Audi', model: 'RS5', year: 2021, price: 68000, mileage: 22000, color: 'White', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Audi+RS5' },
-                        { id: 'c3', sellerId: 'u2', brand: 'Mercedes', model: 'AMG GT', year: 2023, price: 95000, mileage: 8000, color: 'Silver', location: 'Guangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Mercedes+AMG+GT' },
-                        { id: 'c4', sellerId: 'u2', brand: 'Porsche', model: '911', year: 2022, price: 110000, mileage: 12000, color: 'Black', location: 'Shenzhen', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Porsche+911' },
-                        { id: 'c5', sellerId: 'u3', brand: 'Tesla', model: 'Model S', year: 2023, price: 85000, mileage: 5000, color: 'White', location: 'Chengdu', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Tesla+Model+S' },
-                        { id: 'c6', sellerId: 'u3', brand: 'Lexus', model: 'LC 500', year: 2021, price: 78000, mileage: 18000, color: 'Gray', location: 'Hangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Lexus+LC+500' },
-                        { id: 'c7', sellerId: 'u1', brand: 'Ford', model: 'Mustang GT', year: 2022, price: 55000, mileage: 25000, color: 'Red', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Ford+Mustang+GT' },
-                        { id: 'c8', sellerId: 'u2', brand: 'Chevrolet', model: 'Corvette', year: 2023, price: 92000, mileage: 6000, color: 'Black', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Chevrolet+Corvette' }
-                    ];
-                    localStorage.setItem('qmsl_cars', JSON.stringify(defaultCars));
-                }
-            }
-            initData();
-
-            window.QMSL = {
-                register: function(name, address, phone, email, username, password) {
-                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
-                    if (users.find(u => u.username === username)) return false;
-                    const newUser = {
-                        id: 'u' + Date.now(),
-                        name, address, phone, email, username, password
-                    };
-                    users.push(newUser);
-                    localStorage.setItem('qmsl_users', JSON.stringify(users));
-                    sessionStorage.setItem('qmsl_currentUser', JSON.stringify(newUser));
-                    return true;
-                },
-                login: function(username, password) {
-                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
-                    const user = users.find(u => u.username === username && u.password === password);
-                    if (user) {
-                        sessionStorage.setItem('qmsl_currentUser', JSON.stringify(user));
-                        return true;
-                    }
-                    return false;
-                },
-                logout: function() {
-                    sessionStorage.removeItem('qmsl_currentUser');
-                },
-                getCurrentUser: function() {
-                    const stored = sessionStorage.getItem('qmsl_currentUser');
-                    return stored ? JSON.parse(stored) : null;
-                },
-                addCar: function(sellerId, brand, model, year, price, mileage, color, location, image) {
-                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    const newCar = {
-                        id: 'c' + Date.now(),
-                        sellerId,
-                        brand,
-                        model,
-                        year: parseInt(year),
-                        price: parseFloat(price),
-                        mileage: parseInt(mileage),
-                        color,
-                        location,
-                        image: image || `https://placehold.co/600x400/1a1a1a/ffffff?text=${encodeURIComponent(brand + '+' + model)}`
-                    };
-                    cars.push(newCar);
-                    localStorage.setItem('qmsl_cars', JSON.stringify(cars));
-                    return newCar;
-                },
-                searchCars: function(filters) {
-                    let cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    const { keyword, minPrice, maxPrice, minYear, maxYear } = filters;
-                    if (keyword) {
-                        const kw = keyword.toLowerCase();
-                        cars = cars.filter(c => 
-                            c.brand.toLowerCase().includes(kw) ||
-                            c.model.toLowerCase().includes(kw) ||
-                            c.location.toLowerCase().includes(kw)
-                        );
-                    }
-                    if (minPrice) cars = cars.filter(c => c.price >= parseFloat(minPrice));
-                    if (maxPrice) cars = cars.filter(c => c.price <= parseFloat(maxPrice));
-                    if (minYear) cars = cars.filter(c => c.year >= parseInt(minYear));
-                    if (maxYear) cars = cars.filter(c => c.year <= parseInt(maxYear));
-                    return cars;
-                },
-                getCarsBySeller: function(sellerId) {
-                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                    return cars.filter(c => c.sellerId === sellerId);
-                },
-                getAllCars: function() {
-                    return JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
-                }
-            };
-        })();
-    </script>
-
-    <!-- ══════════════ Registration Logic ══════════════ -->
     <script>
         (function() {
             'use strict';
-
-            // 如果已经登录，直接跳转首页
-            const currentUser = window.QMSL.getCurrentUser();
-            if (currentUser) {
-                window.location.href = 'index.html';
-                return;
-            }
 
             const form = document.getElementById('registerForm');
             const successMsg = document.getElementById('successMsg');
@@ -487,7 +372,7 @@
                 name: { regex: /^[A-Za-z ]+$/, emptyMsg: 'Name is required.', invalidMsg: 'Only letters and spaces allowed.' },
                 address: { regex: /^[A-Za-z0-9 ]+$/, emptyMsg: 'Address is required.', invalidMsg: 'Only letters, numbers, and spaces allowed.' },
                 phone: { regex: /^1[3-9]\d{9}$/, emptyMsg: 'Phone number is required.', invalidMsg: 'Invalid China mobile number (11 digits, starts with 1).' },
-                email: { regex: /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.(cn|com)$/, emptyMsg: 'Email is required.', invalidMsg: 'Email must contain @ and end with .cn or .com.' },
+                email: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, emptyMsg: 'Email is required.', invalidMsg: 'Invalid email format.' },
                 username: { regex: /^[A-Za-z0-9]{6,}$/, emptyMsg: 'Username is required.', invalidMsg: 'At least 6 alphanumeric characters.' },
                 password: { regex: /^[A-Za-z0-9]{6,}$/, emptyMsg: 'Password is required.', invalidMsg: 'At least 6 alphanumeric characters.' }
             };
@@ -532,32 +417,12 @@
             fields.phone.addEventListener('input', function() { this.value = this.value.replace(/\D/g, '').slice(0, 11); });
 
             form.addEventListener('submit', function(e) {
-                e.preventDefault();
                 successMsg.classList.remove('show');
-                if (!validateAll()) return;
-
-                const data = {
-                    name: fields.name.value.trim(),
-                    address: fields.address.value.trim(),
-                    phone: fields.phone.value.trim(),
-                    email: fields.email.value.trim(),
-                    username: fields.username.value.trim(),
-                    password: fields.password.value.trim()
-                };
-
-                try {
-                    const result = window.QMSL.register(data.name, data.address, data.phone, data.email, data.username, data.password);
-                    if (result) {
-                        successMsg.textContent = 'Registration successful. Redirecting...';
-                        successMsg.classList.add('show');
-                        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-                    } else {
-                        showError('username', 'Username already taken.');
-                    }
-                } catch (err) {
-                    console.error('Registration error:', err);
-                    showError('username', 'Registration failed. Please try again.');
+                if (!validateAll()) {
+                    e.preventDefault();
+                    return;
                 }
+                // 校验通过：浏览器原生 POST 提交到 register.php，数据写入 MySQL
             });
         })();
     </script>

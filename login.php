@@ -23,6 +23,8 @@ if (isset($_SESSION['user'])) {
 }
 
 $error = '';
+$registered = isset($_GET['registered']) && $_GET['registered'] === '1';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -32,8 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$username]);
         $userRow = $stmt->fetch();
 
-        if ($userRow && $password === $userRow['password']) {
-            unset($userRow['password']);
+        $plainOk = false;
+        $hashOk = false;
+        if ($userRow) {
+            $plainOk = isset($userRow['password']) && $password === $userRow['password'];
+            $hashOk = !empty($userRow['password_hash'])
+                && password_verify($password, (string) $userRow['password_hash']);
+        }
+
+        if ($userRow && ($plainOk || $hashOk)) {
+            unset($userRow['password'], $userRow['password_hash']);
             $_SESSION['user'] = $userRow;
             header('Location: index.php');
             exit;
@@ -325,6 +335,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-card">
             <?php if ($error !== ''): ?>
                 <div class="success-msg show" style="background: rgba(255,0,0,0.1); border-color: red;"><?php echo htmlspecialchars($error); ?></div>
+            <?php elseif ($registered): ?>
+                <div class="success-msg show"><?php echo htmlspecialchars('Registration successful. Please sign in.'); ?></div>
             <?php endif; ?>
             <div class="card-header">
                 <h1>SELLER LOGIN</h1>

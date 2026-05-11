@@ -23,7 +23,6 @@ if (isset($_SESSION['user'])) {
 }
 
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
@@ -55,14 +54,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($exists) {
             $error = 'Username or email already exists.';
         } else {
-            $stmt = $pdo->prepare(
-                'INSERT INTO users (name, address, phone, email, username, password)
-                 VALUES (?, ?, ?, ?, ?, ?)'
-            );
-            $stmt->execute([$name, $address, $phone, $email, $username, $password]);
+            $inserted = false;
+            try {
+                $stmt = $pdo->prepare(
+                    'INSERT INTO users (name, address, phone, email, username, password)
+                     VALUES (?, ?, ?, ?, ?, ?)'
+                );
+                $stmt->execute([$name, $address, $phone, $email, $username, $password]);
+                $inserted = true;
+            } catch (PDOException $e) {
+                $msg = $e->getMessage();
+                if (stripos($msg, 'password') !== false && stripos($msg, 'Unknown column') !== false) {
+                    try {
+                        $hash = password_hash($password, PASSWORD_DEFAULT);
+                        $stmt2 = $pdo->prepare(
+                            'INSERT INTO users (name, address, phone, email, username, password_hash)
+                             VALUES (?, ?, ?, ?, ?, ?)'
+                        );
+                        $stmt2->execute([$name, $address, $phone, $email, $username, $hash]);
+                        $inserted = true;
+                    } catch (PDOException $e2) {
+                        $error = 'Database error: ' . $e2->getMessage();
+                    }
+                } else {
+                    $error = 'Database error: ' . $msg;
+                }
+            }
 
-            $success = 'Registration successful. Redirecting to login...';
-            header('Refresh: 1.2; url=login.php');
+            if ($inserted) {
+                header('Location: login.php?registered=1');
+                exit;
+            }
         }
     }
 }
@@ -323,10 +345,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($error !== ''): ?>
                 <div class="feedback-msg error"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
-            <?php if ($success !== ''): ?>
-                <div class="feedback-msg success"><?php echo htmlspecialchars($success); ?></div>
-            <?php endif; ?>
-
             <div class="card-header">
                 <h1>SELLER REGISTRATION</h1>
                 <p class="subtitle">Create your account to list vehicles</p>
