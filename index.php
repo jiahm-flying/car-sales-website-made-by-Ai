@@ -1,3 +1,8 @@
+<?php
+session_start();
+$userName = $_SESSION['user']['name'] ?? '';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +29,7 @@
             backdrop-filter: blur(10px);
             color: white;
             padding: 1rem 2rem;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -32,6 +38,22 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
+
+        .a_name {
+            text-decoration: none;
+            font-size: 16px;
+            color: #ffffff;
+            white-space: nowrap;
+            padding: 6px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(6px);
+            line-height: 1.4;
+            margin-left: auto;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+        .a_name:hover {opacity: 0.8;}
 
         .menu-icon {
             font-size: 30px;
@@ -42,6 +64,9 @@
         .menu-icon:hover { color: #bdc3c7; }
 
         .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 28px;
             font-weight: bold;
             letter-spacing: 3px;
@@ -227,15 +252,14 @@
     </style>
 </head>
 <body>
-
     <div id="mySidebar" class="sidebar">
         <span class="closebtn" onclick="closeNav()">&times;</span>
         <img src="logo.png" alt="qmsl Logo" class="sidebar-logo" id="sidebarLogo">
-        <a href="search.html">Search</a>
-        <a href="add-car.html">Add Car</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="login.html">Log in</a>
-        <a href="register.html">Register</a>
+        <a href="search.php">Search</a>
+        <a href="add-car.php">Add Car</a>
+        <a href="inventory.php">Inventory</a>
+        <a href="login.php">Log in</a>
+        <a href="register.php">Register</a>
     </div>
 
     <div id="overlay" class="overlay" onclick="closeNav()"></div>
@@ -243,7 +267,9 @@
     <header>
         <div class="menu-icon" onclick="openNav()">&#9776;</div>
         <div class="logo">qmsl</div>
-        <div style="width: 30px;"></div>
+        <?php if (!empty($userName)): ?>
+            <a href="logout.php" class="a_name" title="Click here to log out"><?php echo htmlspecialchars($userName); ?></a>
+        <?php endif; ?>
     </header>
 
     <div class="hero">
@@ -263,7 +289,7 @@
             </p>
         </div>
 
-        <a href="search.html" class="cta-button">Browse Now</a>
+        <a href="search.php" class="cta-button">Browse Now</a>
     </div>
 
     <section class="content-section">

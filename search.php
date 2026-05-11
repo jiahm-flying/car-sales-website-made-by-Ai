@@ -1,3 +1,82 @@
+<?php
+$keyword   = isset($_GET['searchKeyword'])  ? trim($_GET['searchKeyword']) : '';
+$minYear   = isset($_GET['searchMinYear']) && $_GET['searchMinYear'] !== '' ? (int)$_GET['searchMinYear'] : null;
+$maxYear   = isset($_GET['searchMaxYear']) && $_GET['searchMaxYear'] !== '' ? (int)$_GET['searchMaxYear'] : null;
+$minPrice  = isset($_GET['searchMinPrice']) && $_GET['searchMinPrice'] !== '' ? (int)$_GET['searchMinPrice'] : null;
+$maxPrice  = isset($_GET['searchMaxPrice']) && $_GET['searchMaxPrice'] !== '' ? (int)$_GET['searchMaxPrice'] : null;
+
+$connection = mysqli_connect("localhost","root","","car_sales");
+$connection->set_charset("utf8mb4");
+
+$where  = [];
+$params = [];
+$types  = '';
+
+if ($keyword !== '') {
+    $where[] = '(model LIKE ? OR brand LIKE ?)';
+    $params[] = '%' . $keyword . '%';
+    $params[] = '%' . $keyword . '%';
+    $types .= 'ss';
+}
+
+if ($minYear !== null) {
+    $where[]  = 'year >= ?';
+    $params[] = $minYear;
+    $types   .= 'i';
+}
+
+if ($maxYear !== null) {
+    $where[]  = 'year <= ?';
+    $params[] = $maxYear;
+    $types   .= 'i';
+}
+
+if ($minPrice !== null) {
+    $where[]  = 'price >= ?';
+    $params[] = $minPrice;  
+    $types   .= 'i';       
+}
+
+if ($maxPrice !== null) {
+    $where[]  = 'price <= ?';
+    $params[] = $maxPrice;
+    $types   .= 'i';
+}
+
+$sql = "SELECT * FROM cars";
+if (count($where) > 0) {
+    $sql .= " WHERE " . implode(' AND ', $where);
+}
+
+$sql .= " ORDER BY year ASC, price ASC";   
+
+$stmt = $connection->prepare($sql);
+if (!$stmt) {
+    die("SQL fall: " . $connection->error);
+}
+
+if (!empty($params)) {
+    $refs = [];
+    foreach ($params as $key => $value) {
+        $refs[$key] = &$params[$key];
+    }
+    $stmt->bind_param($types, ...$refs);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();  
+
+$cars = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $cars[] = $row;
+    }
+}
+
+$stmt->close();
+$connection->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,7 +122,7 @@
             padding: 0 32px;
         }
 
-        /* ==================== NAVBAR (FIXED - DO NOT MODIFY) ==================== */
+        /* ==================== NAVBAR (FIXED) ==================== */
         .navbar {
             position: fixed;
             top: 0;
@@ -241,6 +320,23 @@
             gap: 12px;
             align-items: flex-end;
             flex-shrink: 0;
+        }
+
+        /* Form validation error styles */
+        .highlight-error {
+            border-color: #ff4d4d !important;
+            background: rgba(255, 77, 77, 0.08) !important;
+        }
+        .form-error-box {
+            background: rgba(255, 77, 77, 0.12);
+            border: 1px solid rgba(255, 77, 77, 0.4);
+            color: #ff9999;
+            padding: 12px 16px;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
+            display: none;
+            margin-bottom: 8px;
         }
 
         /* ==================== RESULTS SECTION — WHITE ZONE ==================== */
@@ -545,7 +641,7 @@
             font-weight: 500;
         }
 
-        /* ==================== FOOTER (FIXED - DO NOT MODIFY) ==================== */
+        /* ==================== FOOTER ==================== */
         .footer {
             background-color: #0a0a0a;
             padding: 48px 0;
@@ -558,13 +654,9 @@
             letter-spacing: 0.1em;
         }
 
-        /* ==================== SCROLLBAR STYLING ==================== */
-        .modal-panel::-webkit-scrollbar {
-            width: 6px;
-        }
-        .modal-panel::-webkit-scrollbar-track {
-            background: transparent;
-        }
+        /* ==================== SCROLLBAR ==================== */
+        .modal-panel::-webkit-scrollbar { width: 6px; }
+        .modal-panel::-webkit-scrollbar-track { background: transparent; }
         .modal-panel::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.15);
             border-radius: 3px;
@@ -575,19 +667,10 @@
 
         /* ==================== ANIMATIONS ==================== */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .car-card {
-            animation: fadeInUp 0.5s ease forwards;
-        }
+        .car-card { animation: fadeInUp 0.5s ease forwards; }
         .car-card:nth-child(1) { animation-delay: 0.05s; }
         .car-card:nth-child(2) { animation-delay: 0.10s; }
         .car-card:nth-child(3) { animation-delay: 0.15s; }
@@ -598,430 +681,183 @@
         .car-card:nth-child(8) { animation-delay: 0.40s; }
         .car-card:nth-child(9) { animation-delay: 0.45s; }
 
-        /* ==================== RESPONSIVE ENHANCEMENTS ==================== */
+        /* ==================== RESPONSIVE ==================== */
         @media (max-width: 1024px) {
-            .car-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 22px;
-            }
-            .search-hero {
-                padding: 48px 0 56px;
-                min-height: auto;
-            }
-            .search-hero-title {
-                font-size: 2.2rem;
-            }
-            .search-panel {
-                padding: 24px 24px;
-                gap: 16px;
-            }
+            .car-grid { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+            .search-hero { padding: 48px 0 56px; min-height: auto; }
+            .search-hero-title { font-size: 2.2rem; }
+            .search-panel { padding: 24px 24px; gap: 16px; }
         }
-
         @media (max-width: 768px) {
-            body {
-                padding-top: 70px;
-            }
-            .navbar {
-                padding: 14px 0;
-            }
-            .nav-container {
-                padding: 0 20px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .logo {
-                font-size: 1.5rem;
-            }
-            .nav-links {
-                gap: 1.5rem;
-            }
-            .nav-links a {
-                font-size: 0.8rem;
-            }
-
-            .search-hero {
-                padding: 40px 0 50px;
-                min-height: auto;
-            }
-            .search-hero-title {
-                font-size: 1.8rem;
-            }
-            .search-hero-subtitle {
-                font-size: 0.9rem;
-                margin-bottom: 24px;
-            }
-            .search-panel {
-                padding: 20px 18px;
-                gap: 14px;
-            }
-            .search-row {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .search-field {
-                min-width: 100%;
-            }
-            .search-actions {
-                flex-direction: row;
-                width: 100%;
-                flex-wrap: wrap;
-            }
-            .search-actions button {
-                flex: 1;
-                white-space: normal;
-                text-align: center;
-            }
-            .car-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 18px;
-            }
-            .container {
-                padding: 0 20px;
-            }
-            .results-section {
-                padding: 40px 0 50px;
-            }
-            .results-header {
-                margin-bottom: 24px;
-            }
-            .empty-state {
-                padding: 60px 20px;
-                font-size: 0.9rem;
-            }
+            body { padding-top: 70px; }
+            .navbar { padding: 14px 0; }
+            .nav-container { padding: 0 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
+            .logo { font-size: 1.5rem; }
+            .nav-links { gap: 1.5rem; }
+            .nav-links a { font-size: 0.8rem; }
+            .search-hero { padding: 40px 0 50px; min-height: auto; }
+            .search-hero-title { font-size: 1.8rem; }
+            .search-hero-subtitle { font-size: 0.9rem; margin-bottom: 24px; }
+            .search-panel { padding: 20px 18px; gap: 14px; }
+            .search-row { flex-direction: column; gap: 12px; }
+            .search-field { min-width: 100%; }
+            .search-actions { flex-direction: row; width: 100%; flex-wrap: wrap; }
+            .search-actions button { flex: 1; white-space: normal; text-align: center; }
+            .car-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+            .container { padding: 0 20px; }
+            .results-section { padding: 40px 0 50px; }
+            .results-header { margin-bottom: 24px; }
+            .empty-state { padding: 60px 20px; font-size: 0.9rem; }
         }
-
         @media (max-width: 600px) {
-            .car-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .search-hero-title {
-                font-size: 1.6rem;
-            }
-            .search-panel {
-                padding: 16px 14px;
-                gap: 12px;
-            }
-            .search-field input {
-                padding: 12px 14px;
-                font-size: 0.9rem;
-            }
-            .btn-primary-dark,
-            .btn-ghost-dark {
-                padding: 12px 16px;
-                font-size: 0.8rem;
-                letter-spacing: 0.06em;
-            }
-            .card-body {
-                padding: 16px 18px 18px;
-                gap: 6px;
-            }
-            .car-title {
-                font-size: 1rem;
-            }
-            .price {
-                font-size: 1.1rem;
-            }
-            .modal-panel {
-                max-width: 100%;
-                margin: 0 8px;
-            }
-            .modal-body {
-                padding: 20px 18px 24px;
-            }
-            .modal-title {
-                font-size: 1.3rem;
-            }
-            .modal-specs {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            .modal-price-large {
-                font-size: 1.5rem;
-            }
-            .modal-close {
-                top: 12px;
-                right: 12px;
-                width: 34px;
-                height: 34px;
-                font-size: 1rem;
-            }
+            .car-grid { grid-template-columns: 1fr; gap: 16px; }
+            .search-hero-title { font-size: 1.6rem; }
+            .search-panel { padding: 16px 14px; gap: 12px; }
+            .search-field input { padding: 12px 14px; font-size: 0.9rem; }
+            .btn-primary-dark, .btn-ghost-dark { padding: 12px 16px; font-size: 0.8rem; letter-spacing: 0.06em; }
+            .card-body { padding: 16px 18px 18px; gap: 6px; }
+            .car-title { font-size: 1rem; }
+            .price { font-size: 1.1rem; }
+            .modal-panel { max-width: 100%; margin: 0 8px; }
+            .modal-body { padding: 20px 18px 24px; }
+            .modal-title { font-size: 1.3rem; }
+            .modal-specs { grid-template-columns: 1fr; gap: 10px; }
+            .modal-price-large { font-size: 1.5rem; }
+            .modal-close { top: 12px; right: 12px; width: 34px; height: 34px; font-size: 1rem; }
         }
-
         @media (max-width: 480px) {
-            body {
-                padding-top: 64px;
-            }
-            .container {
-                padding: 0 14px;
-            }
-            .navbar {
-                padding: 10px 0;
-            }
-            .nav-container {
-                padding: 0 14px;
-                gap: 8px;
-            }
-            .logo {
-                font-size: 1.3rem;
-                letter-spacing: 0.08em;
-            }
-            .nav-links {
-                gap: 1rem;
-                flex-wrap: wrap;
-            }
-            .nav-links a {
-                font-size: 0.7rem;
-                letter-spacing: 0.05em;
-            }
-
-            .search-hero {
-                padding: 32px 0 40px;
-            }
-            .search-hero-title {
-                font-size: 1.5rem;
-                letter-spacing: 0.05em;
-            }
-            .search-hero-subtitle {
-                font-size: 0.8rem;
-                margin-bottom: 20px;
-            }
-            .search-panel {
-                padding: 14px 12px;
-                gap: 10px;
-            }
-            .search-field label {
-                font-size: 0.65rem;
-            }
-            .search-field input {
-                padding: 10px 12px;
-                font-size: 0.8rem;
-            }
-            .search-actions {
-                gap: 8px;
-            }
-            .btn-primary-dark,
-            .btn-ghost-dark {
-                padding: 10px 14px;
-                font-size: 0.75rem;
-            }
-
-            .results-section {
-                padding: 30px 0 40px;
-            }
-            .results-count {
-                font-size: 0.95rem;
-            }
-            .car-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-            .card-body {
-                padding: 14px 14px 16px;
-                gap: 4px;
-            }
-            .car-title {
-                font-size: 0.95rem;
-            }
-            .car-meta {
-                font-size: 0.7rem;
-                gap: 10px;
-            }
-            .car-meta span+span::before {
-                left: -7px;
-            }
-            .car-details {
-                font-size: 0.7rem;
-            }
-            .price {
-                font-size: 1rem;
-            }
-            .location {
-                font-size: 0.7rem;
-            }
-
-            .modal-overlay {
-                padding: 12px;
-            }
-            .modal-panel {
-                max-height: 85vh;
-            }
-            .modal-img {
-                aspect-ratio: 4/3;
-            }
-            .modal-body {
-                padding: 16px 14px 20px;
-            }
-            .modal-title {
-                font-size: 1.2rem;
-            }
-            .modal-subtitle {
-                font-size: 0.75rem;
-                margin-bottom: 14px;
-            }
-            .modal-specs {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                padding: 14px 0;
-                margin-bottom: 18px;
-            }
-            .modal-spec-label {
-                font-size: 0.6rem;
-            }
-            .modal-spec-value {
-                font-size: 0.85rem;
-            }
-            .modal-price-large {
-                font-size: 1.3rem;
-                margin-bottom: 14px;
-            }
-            .modal-description {
-                font-size: 0.8rem;
-                line-height: 1.6;
-            }
-            .modal-contact {
-                font-size: 0.75rem;
-            }
-            .modal-close {
-                top: 10px;
-                right: 10px;
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-            .empty-state {
-                padding: 40px 16px;
-                font-size: 0.8rem;
-            }
+            body { padding-top: 64px; }
+            .container { padding: 0 14px; }
+            .navbar { padding: 10px 0; }
+            .nav-container { padding: 0 14px; gap: 8px; }
+            .logo { font-size: 1.3rem; letter-spacing: 0.08em; }
+            .nav-links { gap: 1rem; flex-wrap: wrap; }
+            .nav-links a { font-size: 0.7rem; letter-spacing: 0.05em; }
+            .search-hero { padding: 32px 0 40px; }
+            .search-hero-title { font-size: 1.5rem; letter-spacing: 0.05em; }
+            .search-hero-subtitle { font-size: 0.8rem; margin-bottom: 20px; }
+            .search-panel { padding: 14px 12px; gap: 10px; }
+            .search-field label { font-size: 0.65rem; }
+            .search-field input { padding: 10px 12px; font-size: 0.8rem; }
+            .search-actions { gap: 8px; }
+            .btn-primary-dark, .btn-ghost-dark { padding: 10px 14px; font-size: 0.75rem; }
+            .results-section { padding: 30px 0 40px; }
+            .results-count { font-size: 0.95rem; }
+            .car-grid { grid-template-columns: 1fr; gap: 14px; }
+            .card-body { padding: 14px 14px 16px; gap: 4px; }
+            .car-title { font-size: 0.95rem; }
+            .car-meta { font-size: 0.7rem; gap: 10px; }
+            .car-meta span+span::before { left: -7px; }
+            .car-details { font-size: 0.7rem; }
+            .price { font-size: 1rem; }
+            .location { font-size: 0.7rem; }
+            .modal-overlay { padding: 12px; }
+            .modal-panel { max-height: 85vh; }
+            .modal-img { aspect-ratio: 4/3; }
+            .modal-body { padding: 16px 14px 20px; }
+            .modal-title { font-size: 1.2rem; }
+            .modal-subtitle { font-size: 0.75rem; margin-bottom: 14px; }
+            .modal-specs { grid-template-columns: 1fr; gap: 8px; padding: 14px 0; margin-bottom: 18px; }
+            .modal-spec-label { font-size: 0.6rem; }
+            .modal-spec-value { font-size: 0.85rem; }
+            .modal-price-large { font-size: 1.3rem; margin-bottom: 14px; }
+            .modal-description { font-size: 0.8rem; line-height: 1.6; }
+            .modal-contact { font-size: 0.75rem; }
+            .modal-close { top: 10px; right: 10px; width: 30px; height: 30px; font-size: 0.9rem; }
+            .empty-state { padding: 40px 16px; font-size: 0.8rem; }
         }
-
         @media (max-width: 360px) {
-            .search-hero-title {
-                font-size: 1.3rem;
-            }
-            .search-field input {
-                padding: 8px 10px;
-                font-size: 0.75rem;
-            }
-            .btn-primary-dark,
-            .btn-ghost-dark {
-                padding: 8px 10px;
-                font-size: 0.7rem;
-                letter-spacing: 0.04em;
-            }
-            .car-title {
-                font-size: 0.9rem;
-            }
-            .price {
-                font-size: 0.95rem;
-            }
-            .modal-title {
-                font-size: 1.1rem;
-            }
-            .modal-price-large {
-                font-size: 1.2rem;
-            }
+            .search-hero-title { font-size: 1.3rem; }
+            .search-field input { padding: 8px 10px; font-size: 0.75rem; }
+            .btn-primary-dark, .btn-ghost-dark { padding: 8px 10px; font-size: 0.7rem; letter-spacing: 0.04em; }
+            .car-title { font-size: 0.9rem; }
+            .price { font-size: 0.95rem; }
+            .modal-title { font-size: 1.1rem; }
+            .modal-price-large { font-size: 1.2rem; }
         }
-
         @media (pointer: coarse) {
-            .car-card {
-                cursor: default;
-            }
-            .btn-primary-dark,
-            .btn-ghost-dark,
-            .modal-close {
-                min-height: 44px;
-                min-width: 44px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .nav-links a {
-                padding: 6px 0;
-                display: inline-block;
-            }
+            .car-card { cursor: default; }
+            .btn-primary-dark, .btn-ghost-dark, .modal-close { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+            .nav-links a { padding: 6px 0; display: inline-block; }
         }
-
         @media (prefers-reduced-motion: reduce) {
-            .car-card {
-                animation: none;
-            }
-            * {
-                transition-duration: 0.01ms !important;
-            }
+            .car-card { animation: none; }
+            * { transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ==================== NAVIGATION BAR (FIXED) ==================== -->
+    <!-- ==================== NAVIGATION BAR ==================== -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">QMSL</a>
             <ul class="nav-links">
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="search.html">SEARCH</a></li>
-                <li><a href="add-car.html">ADD CAR</a></li>
-                <li><a href="inventory.html">INVENTORY</a></li>
-                <li><a href="login.html">LOGIN</a></li>
+                <li><a href="index.php">HOME</a></li>
+                <li><a href="search.php">SEARCH</a></li>
+                <li><a href="add-car.php">ADD CAR</a></li>
+                <li><a href="inventory.php">INVENTORY</a></li>
+                <li><a href="login.php">LOGIN</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- ==================== SEARCH HERO — BLACK ZONE ==================== -->
+    <!-- ==================== SEARCH HERO ==================== -->
     <section class="search-hero">
         <div class="container">
             <h1 class="search-hero-title">Find Your Vehicle</h1>
             <p class="search-hero-subtitle">Search by year, model, or refine with advanced filters.</p>
+            
+            <form id="vehicleSearchForm" action="" method="get" novalidate>
+                <!-- Form error message container -->
+                <div id="formErrorBox" class="form-error-box"></div>
 
-            <div class="search-panel" id="searchPanel">
-                <div class="search-row">
-                    <div class="search-field" style="flex: 1.8;">
-                        <label for="searchKeyword">Brand / Model</label>
-                        <input type="text" id="searchKeyword" placeholder="e.g. BMW, Mercedes, Porsche…" autocomplete="off">
+                <div class="search-panel">
+                    <div class="search-row">
+                        <div class="search-field" style="flex: 1.8;">
+                            <label for="searchKeyword">Brand / Model</label>
+                            <input type="text" id="searchKeyword" name="searchKeyword" placeholder="e.g. BMW, Mercedes, Porsche…" autocomplete="off">
+                        </div>
+                        <div class="search-field" style="flex: 0.8;">
+                            <label for="searchMinYear">Min Year</label>
+                            <input type="number" id="searchMinYear" name="searchMinYear" placeholder="2018" min="1990" max="2026">
+                        </div>
+                        <div class="search-field" style="flex: 0.8;">
+                            <label for="searchMaxYear">Max Year</label>
+                            <input type="number" id="searchMaxYear" name="searchMaxYear" placeholder="2026" min="1990" max="2026">
+                        </div>
+                        <div class="search-actions">
+                            <button class="btn-primary-dark" id="btnSearch" type="submit">SEARCH</button>
+                            <button class="btn-ghost-dark" id="btnReset" type="reset">RESET</button>
+                        </div>
                     </div>
-                    <div class="search-field" style="flex: 0.8;">
-                        <label for="searchMinYear">Min Year</label>
-                        <input type="number" id="searchMinYear" placeholder="2018" min="1990" max="2026">
-                    </div>
-                    <div class="search-field" style="flex: 0.8;">
-                        <label for="searchMaxYear">Max Year</label>
-                        <input type="number" id="searchMaxYear" placeholder="2026" min="1990" max="2026">
-                    </div>
-                    <div class="search-actions">
-                        <button class="btn-primary-dark" id="btnSearch" type="button">SEARCH</button>
-                        <button class="btn-ghost-dark" id="btnReset" type="button">RESET</button>
+                    <div class="search-row">
+                        <div class="search-field" style="flex: 0.8;">
+                            <label for="searchMinPrice">Min Price (USD)</label>
+                            <input type="number" id="searchMinPrice" name="searchMinPrice" placeholder="0" min="0" step="1000">
+                        </div>
+                        <div class="search-field" style="flex: 0.8;">
+                            <label for="searchMaxPrice">Max Price (USD)</label>
+                            <input type="number" id="searchMaxPrice" name="searchMaxPrice" placeholder="200000" min="0" step="1000">
+                        </div>
+                        <div style="flex: 1.8; min-width: 160px;"></div>
+                        <div class="search-actions" style="visibility: hidden; pointer-events: none;">
+                            <button class="btn-primary-dark" type="button" tabindex="-1">&nbsp;</button>
+                            <button class="btn-ghost-dark" type="button" tabindex="-1">&nbsp;</button>
+                        </div>
                     </div>
                 </div>
-                <div class="search-row">
-                    <div class="search-field" style="flex: 0.8;">
-                        <label for="searchMinPrice">Min Price (USD)</label>
-                        <input type="number" id="searchMinPrice" placeholder="0" min="0" step="1000">
-                    </div>
-                    <div class="search-field" style="flex: 0.8;">
-                        <label for="searchMaxPrice">Max Price (USD)</label>
-                        <input type="number" id="searchMaxPrice" placeholder="200000" min="0" step="1000">
-                    </div>
-                    <div style="flex: 1.8; min-width: 160px;"></div>
-                    <div class="search-actions" style="visibility: hidden; pointer-events: none;">
-                        <button class="btn-primary-dark" type="button" tabindex="-1">&nbsp;</button>
-                        <button class="btn-ghost-dark" type="button" tabindex="-1">&nbsp;</button>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </section>
 
-    <!-- ==================== RESULTS SECTION — WHITE ZONE ==================== -->
+    <!-- ==================== RESULTS SECTION ==================== -->
     <section class="results-section">
         <div class="container">
             <div class="results-header">
                 <p class="results-count" id="resultsCount">Showing <span>0 cars</span></p>
             </div>
-            <div class="car-grid" id="carGrid">
-                <!-- Car cards rendered dynamically -->
-            </div>
+            <div class="car-grid" id="carGrid"></div>
             <div class="empty-state" id="emptyState" style="display:none;">No cars found. Try adjusting your search filters.</div>
         </div>
     </section>
@@ -1033,35 +869,66 @@
             <div class="modal-img" id="modalImg">
                 <img src="" alt="" id="modalImageEl">
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Populated by JavaScript -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
-    <!-- ==================== FOOTER (FIXED) ==================== -->
+    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="container">
             <p>© 2025 QMSL. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- 引入外部共享数据模块（根目录下的 qmsl-data.js） -->
-    <script src="qmsl-data.js"></script>
 
-    <!-- ==================== SEARCH PAGE LOGIC ==================== -->
+    <!-- ==================== SEARCH PAGE LOGIC (UPDATED) ==================== -->
     <script>
+        window.__INITIAL_CARS__ = <?php echo json_encode($cars, JSON_UNESCAPED_UNICODE); ?>;
+        window.QMSL = window.QMSL || {};
+        window.QMSL.cars = window.__INITIAL_CARS__ || [];
+
+        // ---------- 真正的客户端过滤 ----------
+        window.QMSL.searchCars = function(filters) {
+            return window.QMSL.cars.filter(function(car) {
+                // Keyword match (brand or model)
+                if (filters.keyword) {
+                    const kw = filters.keyword.toLowerCase();
+                    if (!car.brand.toLowerCase().includes(kw) && !car.model.toLowerCase().includes(kw)) {
+                        return false;
+                    }
+                }
+                // Year range
+                const minY = parseInt(filters.minYear, 10);
+                const maxY = parseInt(filters.maxYear, 10);
+                if (!isNaN(minY) && car.year < minY) return false;
+                if (!isNaN(maxY) && car.year > maxY) return false;
+
+                // Price range
+                const minP = parseFloat(filters.minPrice);
+                const maxP = parseFloat(filters.maxPrice);
+                if (!isNaN(minP) && car.price < minP) return false;
+                if (!isNaN(maxP) && car.price > maxP) return false;
+
+                return true;
+            });
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Form and inputs
+            const form = document.getElementById('vehicleSearchForm');
+            const errorBox = document.getElementById('formErrorBox');
             const searchKeyword = document.getElementById('searchKeyword');
             const searchMinYear = document.getElementById('searchMinYear');
             const searchMaxYear = document.getElementById('searchMaxYear');
             const searchMinPrice = document.getElementById('searchMinPrice');
             const searchMaxPrice = document.getElementById('searchMaxPrice');
-            const btnSearch = document.getElementById('btnSearch');
-            const btnReset = document.getElementById('btnReset');
+
+            // Results
             const carGrid = document.getElementById('carGrid');
             const resultsCount = document.getElementById('resultsCount');
             const emptyState = document.getElementById('emptyState');
+
+            // Modal
             const modalOverlay = document.getElementById('modalOverlay');
             const modalPanel = document.getElementById('modalPanel');
             const modalClose = document.getElementById('modalClose');
@@ -1071,16 +938,18 @@
             function formatPrice(price) { return '$' + price.toLocaleString('en-US'); }
             function formatMileage(mileage) { return mileage.toLocaleString('en-US') + ' mi'; }
 
+            // ---------- 获取当前过滤条件 ----------
             function getFilters() {
                 return {
                     keyword: searchKeyword.value.trim(),
                     minYear: searchMinYear.value,
                     maxYear: searchMaxYear.value,
                     minPrice: searchMinPrice.value,
-                    maxPrice: searchMaxPrice.value,
+                    maxPrice: searchMaxPrice.value
                 };
             }
 
+            // ---------- 渲染车辆卡片 ----------
             function renderCars(cars) {
                 carGrid.innerHTML = '';
                 if (cars.length === 0) {
@@ -1110,8 +979,116 @@
                 });
             }
 
-            function performSearch() { renderCars(window.QMSL.searchCars(getFilters())); }
+            // ---------- 执行搜索（先验证） ----------
+            function performSearch() {
+                const filters = getFilters();
+                const filtered = window.QMSL.searchCars(filters);
+                renderCars(filtered);
+            }
 
+            // ---------- 表单验证 ----------
+            function validateForm(filters) {
+                let errors = [];
+                // 清除上一次高亮
+                clearErrors();
+
+                const minYear = parseInt(filters.minYear, 10);
+                const maxYear = parseInt(filters.maxYear, 10);
+                const minPrice = parseFloat(filters.minPrice);
+                const maxPrice = parseFloat(filters.maxPrice);
+
+                // 年份交叉验证
+                if (!isNaN(minYear) && !isNaN(maxYear) && minYear > maxYear) {
+                    errors.push('Min Year cannot be greater than Max Year.');
+                    highlightField(searchMinYear);
+                    highlightField(searchMaxYear);
+                } else {
+                    if (!isNaN(minYear) && (minYear < 1990 || minYear > 2026)) {
+                        errors.push('Min Year must be between 1990 and 2026.');
+                        highlightField(searchMinYear);
+                    }
+                    if (!isNaN(maxYear) && (maxYear < 1990 || maxYear > 2026)) {
+                        errors.push('Max Year must be between 1990 and 2026.');
+                        highlightField(searchMaxYear);
+                    }
+                }
+
+                // 价格交叉验证
+                if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice > maxPrice) {
+                    errors.push('Min Price cannot be greater than Max Price.');
+                    highlightField(searchMinPrice);
+                    highlightField(searchMaxPrice);
+                } else {
+                    if (!isNaN(minPrice) && minPrice < 0) {
+                        errors.push('Min Price cannot be negative.');
+                        highlightField(searchMinPrice);
+                    }
+                    if (!isNaN(maxPrice) && maxPrice < 0) {
+                        errors.push('Max Price cannot be negative.');
+                        highlightField(searchMaxPrice);
+                    }
+                }
+
+                return errors;
+            }
+
+            function showErrors(errorsArr) {
+                errorBox.style.display = 'block';
+                errorBox.innerHTML = errorsArr.join('<br>');
+            }
+
+            function clearErrors() {
+                errorBox.style.display = 'none';
+                errorBox.innerHTML = '';
+                document.querySelectorAll('.highlight-error').forEach(el => el.classList.remove('highlight-error'));
+            }
+
+            function highlightField(inputEl) {
+                inputEl.classList.add('highlight-error');
+            }
+
+            // ---------- 表单提交事件：阻止默认提交，验证后在前端搜索 ----------
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();                // 永远不刷新页面
+                const filters = getFilters();
+                const errors = validateForm(filters);
+                if (errors.length > 0) {
+                    showErrors(errors);
+                    return;
+                }
+                // 验证通过，执行前端搜索
+                clearErrors();
+                performSearch();
+            });
+
+            // ---------- 重置按钮：清空字段，显示全部车辆 ----------
+            form.addEventListener('reset', function() {
+                // 给浏览器一点时间重置字段值
+                setTimeout(function() {
+                    clearErrors();
+                    performSearch();   // 此时字段已空，显示所有车
+                }, 0);
+            });
+
+            // ---------- Enter 键触发搜索 ----------
+            const allInputs = [searchKeyword, searchMinYear, searchMaxYear, searchMinPrice, searchMaxPrice];
+            allInputs.forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const filters = getFilters();
+                        const errors = validateForm(filters);
+                        if (errors.length > 0) {
+                            showErrors(errors);
+                        } else {
+                            clearErrors();
+                            performSearch();
+                        }
+                    }
+                });
+            });
+
+            // ---------- Modal 逻辑 ----------
             function openDetailModal(car) {
                 const largeImageUrl = car.imageLarge || car.image || 'https://placehold.co/800x500/1a1a1a/ffffff?text=' + encodeURIComponent(car.brand + '+' + car.model);
                 modalImageEl.src = largeImageUrl;
@@ -1127,9 +1104,7 @@
                     '<div class="modal-spec-item"><span class="modal-spec-label">Location</span><span class="modal-spec-value">' + car.location + '</span></div>' +
                     '<div class="modal-spec-item"><span class="modal-spec-label">Transmission</span><span class="modal-spec-value">' + (car.transmission || 'N/A') + '</span></div>' +
                     '<div class="modal-spec-item"><span class="modal-spec-label">Fuel Type</span><span class="modal-spec-value">' + (car.fuelType || 'N/A') + '</span></div>' +
-                    '<div class="modal-spec-item"><span class="modal-spec-label">Engine</span><span class="modal-spec-value">' + (car.engine || 'N/A') + '</span></div>' +
                     '<div class="modal-spec-item"><span class="modal-spec-label">Drivetrain</span><span class="modal-spec-value">' + (car.drivetrain || 'N/A') + '</span></div>' +
-                    '<div class="modal-spec-item"><span class="modal-spec-label">VIN</span><span class="modal-spec-value" style="font-size:0.78rem;letter-spacing:0.06em;">' + (car.vin || 'N/A') + '</span></div>' +
                     '</div>' +
                     '<p class="modal-description">' + (car.description || 'No description available.') + '</p>' +
                     '<p class="modal-contact">Seller contact: <strong>' + (car.phone || 'N/A') + '</strong></p>';
@@ -1143,22 +1118,13 @@
                 document.body.style.overflow = '';
             }
 
-            btnSearch.addEventListener('click', performSearch);
-            [searchKeyword, searchMinYear, searchMaxYear, searchMinPrice, searchMaxPrice].forEach(input => {
-                input.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); performSearch(); } });
-            });
-            btnReset.addEventListener('click', function() {
-                searchKeyword.value = '';
-                searchMinYear.value = '';
-                searchMaxYear.value = '';
-                searchMinPrice.value = '';
-                searchMaxPrice.value = '';
-                performSearch();
-            });
             modalClose.addEventListener('click', function(e) { e.stopPropagation(); closeDetailModal(); });
             modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) closeDetailModal(); });
-            document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeDetailModal(); });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeDetailModal();
+            });
 
+            // 初始加载：显示所有车辆
             performSearch();
         });
     </script>

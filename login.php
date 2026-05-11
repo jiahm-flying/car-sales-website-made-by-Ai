@@ -1,3 +1,50 @@
+<?php
+session_start();
+$host = 'localhost';
+$db   = 'car_sales';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+try {
+    $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+} catch (PDOException $e) {
+    die('Database connection failed: ' . $e->getMessage());
+}
+
+if (isset($_SESSION['user'])) {
+    header('Location: index.php');
+    exit;
+}
+
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if ($username && $password) {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
+
+        if ($user && $password === $user['password']) {
+            unset($user['password']);
+            $_SESSION['user'] = $user;
+            header('Location: index.php');
+            exit;
+        } else {
+            $error = 'Invalid username or password.';
+        }
+    } else {
+        $error = 'Please enter both username and password.';
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +92,6 @@
             letter-spacing: 0.02em;
         }
 
-        /* ── Fixed Navbar ─────────────────────── */
         .navbar {
             position: fixed;
             top: 0;
@@ -94,7 +140,6 @@
         }
         .nav-links a:hover { color: #ffffff; }
 
-        /* ── Main Content ─────────────────────── */
         .main-content {
             flex: 1;
             display: flex;
@@ -240,7 +285,6 @@
             opacity: 0.7;
         }
 
-        /* ── Footer ──────────────────────────── */
         .footer {
             background-color: #0a0a0a;
             padding: 48px 0;
@@ -608,143 +652,44 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">QMSL</a>
+            <a href="index.php" class="logo">QMSL</a>
             <ul class="nav-links">
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="search.html">SEARCH</a></li>
+                <li><a href="index.php">HOME</a></li>
+                <li><a href="search.php">SEARCH</a></li>
                 <li><a href="add-car.html">ADD CAR</a></li>
-                <li><a href="inventory.html">INVENTORY</a></li>
-                <li><a href="login.html">LOGIN</a></li>
+                <li><a href="inventory.php">INVENTORY</a></li>
+                <li><a href="login.php">LOGIN</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="login-card">
-            <div class="success-msg" id="successMsg"></div>
+            <?php if ($error): ?>
+                <div class="success-msg show" style="background: rgba(255,0,0,0.1); border-color: red;"><?php echo htmlspecialchars($error); ?></div>
+            <?php endif; ?>
             <div class="card-header">
                 <h1>SELLER LOGIN</h1>
                 <p class="subtitle">Sign in to manage your vehicles</p>
             </div>
-            <form id="loginForm" novalidate>
+            <form method="POST" action="login.php" novalidate>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" maxlength="40" required>
-                    <div class="error-message" id="username-error"></div>
+                    <input type="text" id="username" name="username" placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" maxlength="60" required>
-                    <div class="error-message" id="password-error"></div>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
                 </div>
                 <button type="submit" class="btn-submit">LOG IN</button>
             </form>
             <div class="card-footer">
-                Don't have an account? <a href="register.html">Register here</a>
+                Don't have an account? <a href="register.php">Register here</a>
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>© 2025 QMSL. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- 引入外部共享数据模块（根目录下的 qmsl-data.js） -->
-    <script src="qmsl-data.js"></script>
-
-    <!-- ══════════════ Login Logic ══════════════ -->
-    <script>
-        (function() {
-            'use strict';
-
-            // 如果已经登录，直接跳转首页
-            const currentUser = window.QMSL.getCurrentUser();
-            if (currentUser) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            const form = document.getElementById('loginForm');
-            const successMsg = document.getElementById('successMsg');
-            const fields = {
-                username: document.getElementById('username'),
-                password: document.getElementById('password')
-            };
-            const errors = {
-                username: document.getElementById('username-error'),
-                password: document.getElementById('password-error')
-            };
-
-            function showError(fieldId, message) {
-                fields[fieldId].classList.add('input-error');
-                errors[fieldId].textContent = message;
-            }
-            function clearError(fieldId) {
-                fields[fieldId].classList.remove('input-error');
-                errors[fieldId].textContent = '';
-            }
-
-            function validateField(fieldId) {
-                const value = fields[fieldId].value.trim();
-                const label = fieldId === 'username' ? 'Username' : 'Password';
-                if (!value) {
-                    showError(fieldId, `${label} is required.`);
-                    return false;
-                }
-                clearError(fieldId);
-                return true;
-            }
-
-            function validateAll() {
-                let valid = true;
-                Object.keys(fields).forEach(fid => {
-                    if (!validateField(fid)) valid = false;
-                });
-                return valid;
-            }
-
-            Object.keys(fields).forEach(fid => {
-                fields[fid].addEventListener('input', function() {
-                    if (this.value.trim() !== '') clearError(fid);
-                    successMsg.classList.remove('show');
-                });
-                fields[fid].addEventListener('blur', function() {
-                    if (this.value.trim() !== '') validateField(fid);
-                });
-            });
-
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                successMsg.classList.remove('show');
-                if (!validateAll()) return;
-
-                const username = fields.username.value.trim();
-                const password = fields.password.value.trim();
-
-                try {
-                    const result = window.QMSL.login(username, password);
-                    if (result) {
-                        successMsg.textContent = 'Login successful. Redirecting...';
-                        successMsg.classList.add('show');
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1000);
-                    } else {
-                        showError('username', 'Invalid username or password.');
-                    }
-                } catch (err) {
-                    console.error('Login error:', err);
-                    showError('username', 'Login failed. Please try again.');
-                }
-            });
-        })();
-    </script>
 </body>
 </html>
+    
