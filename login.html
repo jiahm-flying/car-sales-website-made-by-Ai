@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | QMSL</title>
+    <meta http-equiv="refresh" content="0; url=login.php">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --black-solid: #0a0a0a;
+            --white-solid: #ffffff;
+            --black-text: #111111;
+            --white-text: #ffffff;
+            --secondary-black: rgba(0,0,0,0.55);
+            --secondary-white: rgba(255,255,255,0.60);
+            --tertiary-black: rgba(0,0,0,0.30);
+            --tertiary-white: rgba(255,255,255,0.35);
+            --border-black: rgba(0,0,0,0.08);
+            --border-white: rgba(255,255,255,0.10);
+            --input-bg-black: rgba(255,255,255,0.06);
+            --input-bg-white: rgba(0,0,0,0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            background-color: var(--black-solid);
+            color: var(--white-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Fixed Navbar ─────────────────────── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-white);
+            z-index: 1000;
+            padding: 18px 0;
+            transition: all 0.2s ease;
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .logo:hover { opacity: 0.75; }
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #ffffff; }
+
+        /* ── Main Content ─────────────────────── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 140px 32px 60px;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            width: 100%;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-black);
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 460px;
+            margin: 0 auto;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            color: var(--black-text);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .card-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--black-text);
+            margin-bottom: 6px;
+        }
+        .card-header .subtitle {
+            font-size: 0.9rem;
+            color: var(--secondary-black);
+            letter-spacing: 0.05em;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            color: var(--secondary-black);
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: var(--input-bg-white);
+            border: 1px solid var(--border-black);
+            border-radius: 8px;
+            color: var(--black-text);
+            outline: none;
+            transition: border 0.2s, background 0.2s;
+        }
+        .form-group input:focus {
+            border-color: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.02);
+        }
+        .form-group input.input-error {
+            border-color: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.02);
+        }
+        .error-message {
+            font-size: 0.75rem;
+            color: var(--secondary-black);
+            margin-top: 6px;
+            min-height: 18px;
+            letter-spacing: 0.03em;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--black-solid);
+            color: var(--white-text);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+            margin-top: 8px;
+        }
+        .btn-submit:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .success-msg {
+            background: rgba(0,0,0,0.03);
+            border: 1px solid var(--border-black);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 28px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--black-text);
+            letter-spacing: 0.04em;
+            display: none;
+        }
+        .success-msg.show {
+            display: block;
+        }
+
+        .card-footer {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.85rem;
+            color: var(--secondary-black);
+            letter-spacing: 0.04em;
+        }
+        .card-footer a {
+            color: var(--black-text);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--secondary-black);
+            transition: opacity 0.2s;
+        }
+        .card-footer a:hover {
+            opacity: 0.7;
+        }
+
+        /* ── Footer ──────────────────────────── */
+        .footer {
+            background-color: #0a0a0a;
+            padding: 48px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-white);
+        }
+        .footer p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .nav-links {
+                gap: 1.5rem;
+            }
+            .login-card {
+                padding: 32px 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 120px 16px 40px;
+            }
+            .login-card {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">QMSL</a>
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="search.html">SEARCH</a></li>
+                <li><a href="add-car.html">ADD CAR</a></li>
+                <li><a href="inventory.html">INVENTORY</a></li>
+                <li><a href="login.html">LOGIN</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="login-card">
+            <div class="success-msg" id="successMsg"></div>
+            <div class="card-header">
+                <h1>SELLER LOGIN</h1>
+                <p class="subtitle">Sign in to manage your vehicles</p>
+            </div>
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" maxlength="40" required>
+                    <div class="error-message" id="username-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" maxlength="60" required>
+                    <div class="error-message" id="password-error"></div>
+                </div>
+                <button type="submit" class="btn-submit">LOG IN</button>
+            </form>
+            <div class="card-footer">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 QMSL. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ══════════════ QMSL Shared Module (inline) ══════════════ -->
+    <script>
+        // 共享数据模块 QMSL，内嵌于页面，不再需要外部 js/qmsl.js
+        (function() {
+            'use strict';
+
+            // 初始化默认数据
+            function initData() {
+                if (!localStorage.getItem('qmsl_users')) {
+                    const defaultUsers = [
+                        { id: 'u1', name: 'Alice Johnson', address: '123 Main St', phone: '13812345678', email: 'alice@example.com', username: 'alice', password: 'password1' },
+                        { id: 'u2', name: 'Bob Smith', address: '456 Oak Ave', phone: '13912345678', email: 'bob@example.com', username: 'bob', password: 'password2' },
+                        { id: 'u3', name: 'Charlie Lee', address: '789 Pine Rd', phone: '13712345678', email: 'charlie@example.com', username: 'charlie', password: 'password3' }
+                    ];
+                    localStorage.setItem('qmsl_users', JSON.stringify(defaultUsers));
+                }
+                if (!localStorage.getItem('qmsl_cars')) {
+                    const defaultCars = [
+                        { id: 'c1', sellerId: 'u1', brand: 'BMW', model: 'M4', year: 2022, price: 72000, mileage: 15000, color: 'Black', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=BMW+M4' },
+                        { id: 'c2', sellerId: 'u1', brand: 'Audi', model: 'RS5', year: 2021, price: 68000, mileage: 22000, color: 'White', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Audi+RS5' },
+                        { id: 'c3', sellerId: 'u2', brand: 'Mercedes', model: 'AMG GT', year: 2023, price: 95000, mileage: 8000, color: 'Silver', location: 'Guangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Mercedes+AMG+GT' },
+                        { id: 'c4', sellerId: 'u2', brand: 'Porsche', model: '911', year: 2022, price: 110000, mileage: 12000, color: 'Black', location: 'Shenzhen', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Porsche+911' },
+                        { id: 'c5', sellerId: 'u3', brand: 'Tesla', model: 'Model S', year: 2023, price: 85000, mileage: 5000, color: 'White', location: 'Chengdu', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Tesla+Model+S' },
+                        { id: 'c6', sellerId: 'u3', brand: 'Lexus', model: 'LC 500', year: 2021, price: 78000, mileage: 18000, color: 'Gray', location: 'Hangzhou', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Lexus+LC+500' },
+                        { id: 'c7', sellerId: 'u1', brand: 'Ford', model: 'Mustang GT', year: 2022, price: 55000, mileage: 25000, color: 'Red', location: 'Beijing', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Ford+Mustang+GT' },
+                        { id: 'c8', sellerId: 'u2', brand: 'Chevrolet', model: 'Corvette', year: 2023, price: 92000, mileage: 6000, color: 'Black', location: 'Shanghai', image: 'https://placehold.co/600x400/1a1a1a/ffffff?text=Chevrolet+Corvette' }
+                    ];
+                    localStorage.setItem('qmsl_cars', JSON.stringify(defaultCars));
+                }
+            }
+            initData();
+
+            window.QMSL = {
+                // 注册
+                register: function(name, address, phone, email, username, password) {
+                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
+                    if (users.find(u => u.username === username)) return false;
+                    const newUser = {
+                        id: 'u' + Date.now(),
+                        name, address, phone, email, username, password
+                    };
+                    users.push(newUser);
+                    localStorage.setItem('qmsl_users', JSON.stringify(users));
+                    // 自动登录
+                    sessionStorage.setItem('qmsl_currentUser', JSON.stringify(newUser));
+                    return true;
+                },
+                // 登录
+                login: function(username, password) {
+                    const users = JSON.parse(localStorage.getItem('qmsl_users') || '[]');
+                    const user = users.find(u => u.username === username && u.password === password);
+                    if (user) {
+                        sessionStorage.setItem('qmsl_currentUser', JSON.stringify(user));
+                        return true;
+                    }
+                    return false;
+                },
+                // 登出
+                logout: function() {
+                    sessionStorage.removeItem('qmsl_currentUser');
+                },
+                // 获取当前登录用户
+                getCurrentUser: function() {
+                    const stored = sessionStorage.getItem('qmsl_currentUser');
+                    return stored ? JSON.parse(stored) : null;
+                },
+                // 添加车辆
+                addCar: function(sellerId, brand, model, year, price, mileage, color, location, image) {
+                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                    const newCar = {
+                        id: 'c' + Date.now(),
+                        sellerId,
+                        brand,
+                        model,
+                        year: parseInt(year),
+                        price: parseFloat(price),
+                        mileage: parseInt(mileage),
+                        color,
+                        location,
+                        image: image || `https://placehold.co/600x400/1a1a1a/ffffff?text=${encodeURIComponent(brand + '+' + model)}`
+                    };
+                    cars.push(newCar);
+                    localStorage.setItem('qmsl_cars', JSON.stringify(cars));
+                    return newCar;
+                },
+                // 搜索车辆
+                searchCars: function(filters) {
+                    let cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                    const { keyword, minPrice, maxPrice, minYear, maxYear } = filters;
+                    if (keyword) {
+                        const kw = keyword.toLowerCase();
+                        cars = cars.filter(c => 
+                            c.brand.toLowerCase().includes(kw) ||
+                            c.model.toLowerCase().includes(kw) ||
+                            c.location.toLowerCase().includes(kw)
+                        );
+                    }
+                    if (minPrice) cars = cars.filter(c => c.price >= parseFloat(minPrice));
+                    if (maxPrice) cars = cars.filter(c => c.price <= parseFloat(maxPrice));
+                    if (minYear) cars = cars.filter(c => c.year >= parseInt(minYear));
+                    if (maxYear) cars = cars.filter(c => c.year <= parseInt(maxYear));
+                    return cars;
+                },
+                // 获取某卖家的车
+                getCarsBySeller: function(sellerId) {
+                    const cars = JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                    return cars.filter(c => c.sellerId === sellerId);
+                },
+                // 获取所有车
+                getAllCars: function() {
+                    return JSON.parse(localStorage.getItem('qmsl_cars') || '[]');
+                }
+            };
+        })();
+    </script>
+
+    <!-- ══════════════ Login Logic ══════════════ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // 如果已经登录，直接跳转首页
+            const currentUser = window.QMSL.getCurrentUser();
+            if (currentUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const form = document.getElementById('loginForm');
+            const successMsg = document.getElementById('successMsg');
+            const fields = {
+                username: document.getElementById('username'),
+                password: document.getElementById('password')
+            };
+            const errors = {
+                username: document.getElementById('username-error'),
+                password: document.getElementById('password-error')
+            };
+
+            function showError(fieldId, message) {
+                fields[fieldId].classList.add('input-error');
+                errors[fieldId].textContent = message;
+            }
+            function clearError(fieldId) {
+                fields[fieldId].classList.remove('input-error');
+                errors[fieldId].textContent = '';
+            }
+
+            function validateField(fieldId) {
+                const value = fields[fieldId].value.trim();
+                const label = fieldId === 'username' ? 'Username' : 'Password';
+                if (!value) {
+                    showError(fieldId, `${label} is required.`);
+                    return false;
+                }
+                clearError(fieldId);
+                return true;
+            }
+
+            function validateAll() {
+                let valid = true;
+                Object.keys(fields).forEach(fid => {
+                    if (!validateField(fid)) valid = false;
+                });
+                return valid;
+            }
+
+            Object.keys(fields).forEach(fid => {
+                fields[fid].addEventListener('input', function() {
+                    if (this.value.trim() !== '') clearError(fid);
+                    successMsg.classList.remove('show');
+                });
+                fields[fid].addEventListener('blur', function() {
+                    if (this.value.trim() !== '') validateField(fid);
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                successMsg.classList.remove('show');
+                if (!validateAll()) return;
+
+                const username = fields.username.value.trim();
+                const password = fields.password.value.trim();
+
+                try {
+                    const result = window.QMSL.login(username, password);
+                    if (result) {
+                        successMsg.textContent = 'Login successful. Redirecting...';
+                        successMsg.classList.add('show');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    } else {
+                        showError('username', 'Invalid username or password.');
+                    }
+                } catch (err) {
+                    console.error('Login error:', err);
+                    showError('username', 'Login failed. Please try again.');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
